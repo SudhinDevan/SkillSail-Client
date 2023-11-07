@@ -1,10 +1,8 @@
-import Footer from "../Navbar/Footer";
-import UserNavbar from "../Navbar/UserNavbar";
+import { Link } from "react-router-dom";
 
-const UserSignin = () => {
+const SignIn = () => {
   return (
     <>
-      <UserNavbar />
       <div className="flex flex-col items-center px-3 pb-5">
         <div className="flex flex-col items-center p-2">
           <h1 className="font-semibold text-2xl sm:text-xl md:text-lg lg:text-2xl p-5 sm:px-6 md:px-8 lg:px-5">
@@ -34,7 +32,9 @@ const UserSignin = () => {
             <div className="px-2">
               <h1 className="font-semibold">
                 New to SkillSail ?{" "}
-                <span className="text-orange-700 font-bold">SignUp</span>
+                <Link to="/signup">
+                  <span className="text-orange-400 font-bold">SignUp</span>
+                </Link>
               </h1>
             </div>
             <div className="flex justify-center py-5">
@@ -48,19 +48,18 @@ const UserSignin = () => {
             </div>
           </form>
           <div className="flex justify-center py-2">
-              <button
-                type="submit"
-                style={{ backgroundColor: "#004787" }}
-                className="py-2 px-8 items-center text-white text-xl font-semibold"
-              >
-                Continue with Google Account
-              </button>
-            </div>
+            <button
+              type="submit"
+              style={{ backgroundColor: "#004787" }}
+              className="py-2 px-8 items-center text-white text-xl font-semibold"
+            >
+              Continue with Google Account
+            </button>
+          </div>
         </div>
       </div>
-      <Footer />
     </>
   );
 };
 
-export default UserSignin;
+export default SignIn;

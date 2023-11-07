@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Logo from "../Logo";
 import { MdMenu } from "react-icons/md";
+import { Link } from "react-router-dom";
 
 const UserNavbar = () => {
   const [toggle, setToggle] = useState(true);
@@ -22,8 +23,12 @@ const UserNavbar = () => {
           </ul>
         </div>
         <div className="hidden md:flex gap-4">
-          <span className="border-black border p-2">LOGIN</span>
-          <span className="bg-black text-white p-2">SIGNUP</span>
+          <Link to="/login">
+            <span className="border-black border p-2">LOGIN</span>
+          </Link>
+          <Link to="/signup">
+            <span className="bg-black text-white p-2">SIGNUP</span>
+          </Link>
         </div>
         <div className="flex md:hidden" onClick={updateToggle}>
           {toggle ? (
@@ -40,6 +45,12 @@ const UserNavbar = () => {
             <li className="p-3">COURSE</li>
             <li className="p-3">MY LEARNING</li>
             <li className="p-3">BLOG</li>
+            <Link to="/login">
+              <li className="p-3">LOGIN</li>
+            </Link>
+            <Link to="/signup">
+              <li className="p-3">SIGNUP</li>
+            </Link>
           </ul>
         </div>
       )}

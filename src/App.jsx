@@ -1,10 +1,10 @@
 import "./App.css";
-import UserSignup from "./Components/Signup/UserSignup";
+import AuthRoutes from "./Routes/AuthRoutes";
 
 function App() {
   return (
     <>
-    <UserSignup/>
+      <AuthRoutes />
     </>
   );
 }
