@@ -2,7 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { authActions } from "../../Store/Index";
+import { userLogin } from "../../Redux/userSlice";
 
 const SignIn = () => {
   const dispatch = useDispatch();
@@ -27,14 +27,28 @@ const SignIn = () => {
       })
       .catch((err) => console.log(err));
     const data = await res.data;
+    console.log(data);
     return data;
   };
 
+  
   const handleSubmit = (e) => {
     e.preventDefault();
     sendRequest()
-      .then(() => dispatch(authActions.login()))
-      .then(() => navigate("/"));
+      .then((res) => {
+        const { id, name, email } = res.user;
+        dispatch(
+          userLogin({
+            id,
+            name,
+            email,
+          })
+        );
+      })
+      .then(() => navigate("/"))
+      .catch((error) => {
+        console.error("Login failed:", error);
+      });
   };
 
   return (

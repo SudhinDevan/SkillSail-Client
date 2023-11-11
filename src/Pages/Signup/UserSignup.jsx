@@ -6,8 +6,9 @@ const UserSignup = () => {
   return (
     <>
       <UserNavbar />
-      <SignUp />  
+      <SignUp />
       <Footer />
+
     </>
   );
 };

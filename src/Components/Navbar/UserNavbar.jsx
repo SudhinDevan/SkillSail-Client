@@ -2,14 +2,13 @@ import { useState } from "react";
 import { MdMenu } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { authActions } from "../../Store/Index";
+import { userLogout } from "../../Redux/userSlice";
 import axios from "axios";
 import Logo from "../Logo";
 axios.defaults.withCredentials = true;
 
 const UserNavbar = () => {
   const dispatch = useDispatch();
-  const isLoggedIn = useSelector((state) => state.isLoggedIn);
   const navigate = useNavigate();
   const [toggle, setToggle] = useState(true);
 
@@ -17,24 +16,19 @@ const UserNavbar = () => {
     setToggle(!toggle);
   };
 
-  const sendLogoutRequest = async () => {
-    try {
-      const res = await axios.post("http://localhost:3000/logout", null, {
-        withCredentials: true,
-      });
-      if (res.status == 200) {
-        return res;
-      } else {
-        throw new Error("Unable to Logout");
-      }
-    } catch (err) {
-      console.error(err);
-      throw err;
-    }
-  };
+  const { id } = useSelector((state) => state);
 
-  const handleLogout = () => {
-    sendLogoutRequest().then(() => dispatch(authActions.logout()));
+  const handleLogout = async () => {
+    try {
+      const res = await axios.post("http://localhost:3000/logout");
+      if (res.status === 200) {
+        dispatch(userLogout());
+        navigate("/");
+      }
+    } catch (error) {
+      // Handle errors from the request (optional)
+      console.error("Logout error:", error);
+    }
   };
 
   return (
@@ -50,25 +44,26 @@ const UserNavbar = () => {
           </ul>
         </div>
         <div className="hidden md:flex gap-4">
-          {!isLoggedIn && (
+          {!id ? (
             <>
               <span
-                className="border-black border p-2"
+                className="border-black border p-2 cursor-pointer"
                 onClick={() => navigate("/login")}
               >
                 LOGIN
               </span>
               <span
-                className="bg-black text-white p-2"
+                className="bg-black text-white p-2 cursor-pointer"
                 onClick={() => navigate("/signup")}
               >
                 SIGNUP
               </span>
             </>
-          )}
-
-          {isLoggedIn && (
-            <span className="bg-black text-white p-2" onClick={handleLogout}>
+          ) : (
+            <span
+              className="bg-black text-white p-2 cursor-pointer"
+              onClick={handleLogout}
+            >
               LOGOUT
             </span>
           )}
@@ -88,7 +83,7 @@ const UserNavbar = () => {
             <li className="p-3">COURSE</li>
             <li className="p-3">MY LEARNING</li>
             <li className="p-3">BLOG</li>
-            {!isLoggedIn && (
+            {!id ? (
               <>
                 <li className="p-3" onClick={() => navigate("/login")}>
                   LOGIN
@@ -97,8 +92,7 @@ const UserNavbar = () => {
                   SIGNUP
                 </li>
               </>
-            )}
-            {isLoggedIn && (
+            ) : (
               <li className="p-3" onClick={() => navigate("/login")}>
                 LOGOUT
               </li>

@@ -1,18 +1,30 @@
 import { Route, Routes } from "react-router-dom";
-import { useSelector } from "react-redux";
 import UserSignin from "../Pages/Signin/UserSignin";
 import UserSignup from "../Pages/Signup/UserSignup";
 import Home from "../Pages/Home/Home";
+import ProtectedAuthRoutes from "../Utils/ProtectedAuthRoutes";
 
 const AuthRoutes = () => {
-  // const isLoggedIn = useSelector((state) => state.isLoggedIn);
   return (
     <>
       <Routes>
-        <Route path="/signup" element={<UserSignup />} />
-        <Route path="/login" element={<UserSignin />} />
+        <Route
+          path="/login"
+          element={
+            <ProtectedAuthRoutes>
+              <UserSignin />
+            </ProtectedAuthRoutes>
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            <ProtectedAuthRoutes>
+              <UserSignup />
+            </ProtectedAuthRoutes>
+          }
+        />
         <Route path="/" element={<Home />} />
-        <Route path="/login" element={<UserSignin />} />
       </Routes>
     </>
   );

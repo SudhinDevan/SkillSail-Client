@@ -1,9 +1,15 @@
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  showErrorToast,
+  showToast,
+  ToastContainer,
+} from "../../Helpers/Toasters";
+import "react-toastify/dist/ReactToastify.css";
 
 const SignUp = () => {
-  const history = useNavigate();
+  const navigate = useNavigate();
   const [inputs, setInputs] = useState({
     name: "",
     email: "",
@@ -18,21 +24,49 @@ const SignUp = () => {
     }));
   };
 
-  const sendRequest = async () => {
-    const res = await axios
-      .post("http://localhost:3000/signup", {
-        name: inputs.name,
-        email: inputs.email,
-        password: inputs.password,
-      })
-      .catch((err) => console.log(err));
-    const data = await res.data;
-    return data;
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    sendRequest().then(() => history("/login"));
+    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    const namePattern = /^[a-zA-Z._-]+$/;
+    const passwordPattern = /^\d{6}$/;
+    if (inputs.name.trim() === "" || !namePattern.test(inputs.name)) {
+      showErrorToast("Enter a Valid Name");
+      return;
+    }
+    if (inputs.email.trim() === "" || !emailPattern.test(inputs.email)) {
+      showErrorToast("Enter Valid Email");
+      return;
+    }
+    if (
+      inputs.password.trim() === "" ||
+      !passwordPattern.test(inputs.password)
+    ) {
+      showErrorToast("Password Must be atleast 6 digits");
+      return;
+    }
+    if (inputs.password !== inputs.confirmPassword) {
+      showErrorToast("Passwords do not match");
+      return;
+    }
+    const userData = {
+      name: inputs.name,
+      email: inputs.email,
+      password: inputs.password,
+    };
+    await axios
+      .post("http://localhost:3000/signup", userData)
+      .then((response) => {
+        if (response) {
+          console.log();
+          showToast("Registration successful");
+          navigate("/login");
+        } else {
+          showErrorToast("Cannot Register User");
+        }
+      })
+      .catch((error) => {
+        showErrorToast(error.message || "An error occurred");
+      });
   };
 
   return (
@@ -96,6 +130,7 @@ const SignUp = () => {
             </button>{" "}
           </form>
         </div>
+        <ToastContainer />
       </div>
     </>
   );
