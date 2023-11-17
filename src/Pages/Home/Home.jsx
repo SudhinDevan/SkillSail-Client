@@ -5,21 +5,16 @@ import { useSelector } from "react-redux";
 axios.defaults.withCredentials = true;
 
 const Home = () => {
-  const { name, email, id } = useSelector((state) => state);
+  const { name, email, id } = useSelector((state) => state.user);
 
   return (
     <>
       <UserNavbar />
-      <h1 className="flex justify-center items-center text-3xl">
-        Welcome Home {name}
-      </h1>
-      <h1 className="flex justify-center items-center text-3xl">
-        Welcome Home {email}
-      </h1>
-      <h1 className="flex justify-center items-center text-3xl">
-        Welcome Home {id}
-      </h1>
-
+      <div className="flex flex-col text-center justify-center items-center h-screen">
+        <h1 className="text-3xl">Welcome Home {name}</h1>
+        <h1 className="text-3xl">Welcome Home {email}</h1>
+        <h1 className="text-3xl">Welcome Home {id}</h1>
+      </div>
       <Footer />
     </>
   );

@@ -2,7 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { userLogin } from "../../Redux/userSlice";
+import { adminLogin } from "../../Redux/adminSlice";
 
 const SignIn = () => {
   const dispatch = useDispatch();
@@ -21,7 +21,7 @@ const SignIn = () => {
 
   const sendRequest = async () => {
     const res = await axios
-      .post("http://localhost:3000/login", {
+      .post("http://localhost:3000/admin/login", {
         email: inputs.email,
         password: inputs.password,
       })
@@ -34,17 +34,8 @@ const SignIn = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     sendRequest()
-      .then((res) => {
-        const { id, name, email } = res.user;
-        dispatch(
-          userLogin({
-            id,
-            name,
-            email,
-          })
-        );
-      })
-      .then(() => navigate("/"))
+      .then(dispatch(adminLogin()))
+      .then(() => navigate("/admin/dashboard"))
       .catch((error) => {
         console.error("Login failed:", error);
       });
@@ -55,7 +46,7 @@ const SignIn = () => {
       <div className="flex flex-col items-center px-3 pb-5 lg:pt-5">
         <div className="flex flex-col items-center p-2">
           <h1 className="font-semibold text-2xl sm:text-xl md:text-lg lg:text-2xl p-5 sm:px-6 md:px-8 lg:px-5">
-            Log in to your SkillSail Account
+            Log in to your SkillSail Admin Account
           </h1>
           <form onSubmit={handleSubmit}>
             <div className="flex flex-col p-3 w-96 max-w-md lg:pt-5">
@@ -84,18 +75,7 @@ const SignIn = () => {
                 className="border h-10 border-black p-2"
               />
             </div>
-            <div className="px-2 lg:pt-5">
-              <h1 className="font-semibold">
-                New to SkillSail ?{" "}
-                <span
-                  className="text-orange-400 font-bold"
-                  onClick={() => navigate("/signup")}
-                >
-                  SignUp
-                </span>
-              </h1>
-            </div>
-            <div className="flex justify-center py-5 lg:mt-5">
+            <div className="flex justify-center py-5 lg:mt-5 mb-10">
               <button
                 type="submit"
                 style={{ backgroundColor: "#004787" }}
@@ -105,15 +85,6 @@ const SignIn = () => {
               </button>
             </div>
           </form>
-          {/* <div className="flex justify-center py-2">
-            <button
-              type="submit"
-              style={{ backgroundColor: "#004787" }}
-              className="py-2 px-8 items-center text-white text-xl font-semibold"
-            >
-              Continue with Google Account
-            </button>
-          </div> */}
         </div>
       </div>
     </>

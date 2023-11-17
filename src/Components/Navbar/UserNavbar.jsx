@@ -16,7 +16,7 @@ const UserNavbar = () => {
     setToggle(!toggle);
   };
 
-  const { id } = useSelector((state) => state);
+  const { id } = useSelector((state) => state.user);
 
   const handleLogout = async () => {
     try {
@@ -41,6 +41,7 @@ const UserNavbar = () => {
             <li>COURSE</li>
             <li>MY LEARNING</li>
             <li>BLOG</li>
+            <li>PROFILE</li>
           </ul>
         </div>
         <div className="hidden md:flex gap-4">
@@ -83,6 +84,9 @@ const UserNavbar = () => {
             <li className="p-3">COURSE</li>
             <li className="p-3">MY LEARNING</li>
             <li className="p-3">BLOG</li>
+            <li className="p-3" onClick={() => navigate("/profile")}>
+              PROFILE
+            </li>
             {!id ? (
               <>
                 <li className="p-3" onClick={() => navigate("/login")}>

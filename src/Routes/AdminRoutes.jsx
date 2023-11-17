@@ -4,6 +4,7 @@ import AdminDashboard from "../Pages/Home/AdminDashboard";
 import ProtectedAdminRoutes from "../Utils/ProtectedAdminRoutes";
 import AdminAuthRoute from "../Utils/AdminAuthRoute";
 import UserListing from "../Pages/Listing/UserListing";
+import TeacherListing from "../Pages/Listing/TeacherListing";
 
 const AdminRoutes = () => {
   return (
@@ -30,6 +31,14 @@ const AdminRoutes = () => {
           element={
             <AdminAuthRoute>
               <UserListing />
+            </AdminAuthRoute>
+          }
+        />
+        <Route
+          path="/admin/teachers"
+          element={
+            <AdminAuthRoute>
+              <TeacherListing />
             </AdminAuthRoute>
           }
         />

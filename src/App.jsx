@@ -1,11 +1,12 @@
 import "./App.css";
-import AuthRoutes from "./Routes/AuthRoutes";
+import AdminRoutes from "./Routes/AdminRoutes";
+import AuthRoutes from "./Routes/UserRoutes";
 
 function App() {
-
   return (
     <>
       <AuthRoutes />
+      <AdminRoutes />
     </>
   );
 }
