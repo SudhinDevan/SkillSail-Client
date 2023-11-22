@@ -3,10 +3,12 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { userLogin } from "../../Redux/userSlice";
+import toast, { Toaster } from "react-hot-toast";
 
 const SignIn = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const [inputs, setInputs] = useState({
     email: "",
     password: "",
@@ -25,28 +27,39 @@ const SignIn = () => {
         email: inputs.email,
         password: inputs.password,
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err.message));
+
     const data = await res.data;
-    console.log(data);
-    return data;
+    return { ...data, status: res.status };
   };
+
+  let toastId;
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    toastId = toast.loading("Loading...");
     sendRequest()
       .then((res) => {
-        const { id, name, email } = res.user;
-        dispatch(
-          userLogin({
-            id,
-            name,
-            email,
-          })
-        );
+        if (res.status === 201) {
+          toast.remove(toastId);
+          navigate("/verifyOtp", { state: res.user });
+        } else if (res.status === 200) {
+          toast.remove(toastId);
+          const { id, name, email, phone } = res.user;
+          dispatch(
+            userLogin({
+              id,
+              name,
+              email,
+              phone,
+            })
+          );
+          navigate("/");
+        }
       })
-      .then(() => navigate("/"))
-      .catch((error) => {
-        console.error("Login failed:", error);
+      .catch(() => {
+        toast.remove(toastId);
+        toast.error("Invalid Credentials");
       });
   };
 
@@ -116,6 +129,7 @@ const SignIn = () => {
           </div> */}
         </div>
       </div>
+      <Toaster />
     </>
   );
 };

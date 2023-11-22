@@ -1,11 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  showErrorToast,
-  showToast,
-  ToastContainer,
-} from "../../Helpers/Toasters";
+import toast, { Toaster } from "react-hot-toast";
 import "react-toastify/dist/ReactToastify.css";
 
 const SignUp = () => {
@@ -13,6 +9,7 @@ const SignUp = () => {
   const [inputs, setInputs] = useState({
     name: "",
     email: "",
+    phone: "",
     password: "",
     confirmPassword: "",
   });
@@ -33,30 +30,51 @@ const SignUp = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-    const namePattern = /^[a-zA-Z._-]+$/;
+    const namePattern = /^[a-zA-Z._ -]+$/;
     const passwordPattern = /^\d{6}$/;
+    const phonePattern = /^\d{10}$/;
     if (inputs.name.trim() === "" || !namePattern.test(inputs.name)) {
-      showErrorToast("Enter a Valid Name");
+      // showErrorToast("Enter a Valid Name");
+      toast.error("Enter a valid name", {
+        duration: 1500,
+      });
       return;
     }
     if (inputs.email.trim() === "" || !emailPattern.test(inputs.email)) {
-      showErrorToast("Enter Valid Email");
+      // showErrorToast("Enter Valid Email");
+      toast.error("Enter a valid email", {
+        duration: 1500,
+      });
+      return;
+    }
+    if (inputs.phone.trim() === "" || !phonePattern.test(inputs.phone)) {
+      // showErrorToast("Enter a Valid Name");
+      toast.error("Enter a valid phone number", {
+        duration: 1500,
+      });
       return;
     }
     if (
       inputs.password.trim() === "" ||
       !passwordPattern.test(inputs.password)
     ) {
-      showErrorToast("Password Must be atleast 6 digits");
+      // showErrorToast("Password Must be atleast 6 digits");
+      toast.error("Password must be atleast 6 digits", {
+        duration: 1500,
+      });
       return;
     }
     if (inputs.password !== inputs.confirmPassword) {
-      showErrorToast("Passwords do not match");
+      // showErrorToast("Passwords do not match");
+      toast.error("Password do not match", {
+        duration: 1500,
+      });
       return;
     }
     const userData = {
       name: inputs.name,
       email: inputs.email,
+      phone: inputs.phone,
       password: inputs.password,
       role: isChecked ? 3000 : 2000,
     };
@@ -65,14 +83,25 @@ const SignUp = () => {
       .then((response) => {
         if (response) {
           console.log();
-          showToast("Registration successful");
-          navigate("/login");
+          // showToast("Registration successful");
+          toast.success("Registration Successful", {
+            duration: 1500,
+          });
+          setTimeout(() => {
+            navigate("/login");
+          }, 1500);
         } else {
-          showErrorToast("Cannot Register User");
+          // showErrorToast("Cannot Register User");
+          toast.error("Cannot register User", {
+            duration: 1500,
+          });
         }
       })
       .catch((error) => {
-        showErrorToast(error.message || "An error occurred");
+        // showErrorToast(error.message || "An error occurred");
+        toast.error("An error occured" || error.message, {
+          duration: 1500,
+        });
       });
   };
 
@@ -104,6 +133,17 @@ const SignUp = () => {
                   name="email"
                   type="text"
                   placeholder="Your Email"
+                  className="border h-10 border-black p-2"
+                />
+              </div>
+              <div className="flex flex-col p-3 w-96 max-w-md">
+                <label className="pb-3 font-semibold">Your Phone: </label>
+                <input
+                  value={inputs.phone}
+                  onChange={handleChange}
+                  name="phone"
+                  type="text"
+                  placeholder="Your Phone"
                   className="border h-10 border-black p-2"
                 />
               </div>
@@ -158,7 +198,7 @@ const SignUp = () => {
               </button>
             </form>
           </div>
-          <ToastContainer />
+          <Toaster />
         </div>
       </div>
     </>

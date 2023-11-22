@@ -3,6 +3,9 @@ import UserSignin from "../Pages/Signin/UserSignin";
 import UserSignup from "../Pages/Signup/UserSignup";
 import Home from "../Pages/Home/Home";
 import ProtectedAuthRoutes from "../Utils/ProtectedUserAuthRoutes";
+import OtpVerify from "../Pages/Otp/OtpVerify";
+import UserProfile from "../Pages/Profile/UserProfile";
+import ProtectedUserRoutes from "../Utils/ProtectedUserRoutes";
 
 const AuthRoutes = () => {
   return (
@@ -25,6 +28,16 @@ const AuthRoutes = () => {
           }
         />
         <Route path="/" element={<Home />} />
+        <Route path="/verifyOtp" element={<OtpVerify />} />
+
+        <Route
+          path="/profile"
+          element={
+            <ProtectedUserRoutes>
+              <UserProfile />
+            </ProtectedUserRoutes>
+          }
+        />
       </Routes>
     </>
   );
