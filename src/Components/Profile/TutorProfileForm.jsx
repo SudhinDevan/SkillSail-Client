@@ -1,11 +1,11 @@
 import { useSelector } from "react-redux";
 import { useState } from "react";
-import axios from "axios";
+import AxiosInstance from "../../Axios/AxiosInstance";
 import { useDispatch } from "react-redux";
 import { userLogin } from "../../Redux/userSlice";
 import toast, { Toaster } from "react-hot-toast";
 
-const Profile = () => {
+const TutorProfileForm = () => {
   const { name, email, phone } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -14,6 +14,7 @@ const Profile = () => {
     phone: "",
     email: email,
   });
+  // const [image, setImage] = useState(null);
 
   const toggleModal = () => {
     setIsModalVisible((prev) => !prev);
@@ -27,9 +28,9 @@ const Profile = () => {
   };
 
   const sendRequest = async () => {
-    const res = await axios
-      .post("http://localhost:3000/editProfile", inputs)
-      .catch((error) => console.log(error.message));
+    const res = await AxiosInstance.post("/editProfile", inputs).catch(
+      (error) => console.log(error.message)
+    );
 
     const data = await res.data;
     return { ...data, status: res.status };
@@ -45,13 +46,14 @@ const Profile = () => {
       sendRequest().then((res) => {
         if (res.status === 200) {
           console.log(res);
-          const { name, phone, email, _id } = res.updatedUser;
+          const { name, phone, email, _id, role } = res.updatedUser;
           dispatch(
             userLogin({
               name,
               phone,
               email,
               id: _id,
+              role,
             })
           );
           toast.success("Successfully Updated");
@@ -60,6 +62,45 @@ const Profile = () => {
       });
     }
   };
+
+  // const displayImageSet = (e) => {
+  //   const file = e.target.files[0];
+  //   const reader = new FileReader();
+  //   reader.readAsDataURL(file);
+
+  //   reader.onloadend = () => {
+  //     // console.log('imageData');
+  //     const imageData = reader.result;
+  //     // console.log(imageData);
+  //     setImage(imageData);
+  //     // imageUploader();
+  //   };
+
+  //   // if (e.type === "loadend") {
+  //   //   const imageData = reader.result;
+  //   //   setImage(imageData);
+  //   //   imageUploader();
+  //   // }
+  //   console.log('sdfjdf',image);
+  //   // imageUploader();
+  // };
+
+  // useEffect(()=>{
+  //   imageUploader();
+  // },[image])
+
+  // const imageUploader = async () => {
+  //   console.log("image: ", image);
+  //   try {
+  //     const res = await AxiosInstance.post(
+  //       "/profile/displayimage",
+  //       { image }
+  //     );
+  //     console.log(res.data);
+  //   } catch (error) {
+  //     console.log(error.message);
+  //   }
+  // };
 
   return (
     <>
@@ -112,10 +153,22 @@ const Profile = () => {
                   "url('https://source.unsplash.com/MP0IUfwrn0A')",
               }}
             >
-              <img
-                className="w-10 pt-2 pr-2 hover:transform hover:-translate-y-1 hover:duration-300"
-                src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsTAAALEwEAmpwYAAADaElEQVR4nO2bTU8TQRyHG6M3v4DfwKMJR4lN3Ckvs0WkswsYFA+iF00IiVKNhYpVEY0KRCC8aFwiypsR5ODBRAzEg1Ex3AxIAJHEg8gBoZQ2/ZtprLal3Wy3LTtb55fMaV+fZ2ZnZ2d3LRYeHp54QXbZKojSgIDJsoBJAIkS7HwhWwiTJkuScbvduw4XyjYkSncFLL1AWBpHmAwhkTjz7I79qhvn5JzZg0TSaQzw9lJwpNwHAE6tZXhkrFuqqPquss8grdj8/JJ98WueJfjicuh59Bi0ZvDZKOQVlWraN23ZNiwf2NbsI1eq9zTBzOwc+P1+YD1K34Aeya+iBAiiNBhe6Gq4CWaJTnjax7RFC8BkObyQ1nxWw2MyaZXlvbEC/vb2Wdzs48PTRK6UvfDSRFx4MwnQC1956uxiQnizCNALX1NbByurqzcsakGMC0gFfsPrpbu4YloBSurw5hWgpAfenAIUvfDO+lh48wlQ0gtvLgFK+uHNI0BJAd7r3VTbNfsClMzBsy9AySw82wIUnfBO11XY9NFJIzCvgP7hkYzDdz3shYLiMvU5RmSQgNITpzNd86HpNbqdgImPOQGdD3qThPckBU8TuT1zAoLBILR29GQMnjkBHz9NQ2t7N8wvfo2S0Hy/UxX+Yt018Pm2dB2TGQE/Vn4CLjkWOsbR0pPweWY2SsL1pntph2dKgBJzu4uVQFtHuuGZEeD3B6AsTo9PJXyYmg4NZhpvt0Qtu1SfOjwzAsYn3ibd26cDnhkBNbV1hsAzIWBhcQlsdtkQeCYEtLR1aYJP1zXPlID19Q0oIsdVwasvuOD1m0kIBAKQiRgqYHTsZVxo0VEBd1o74MvcPGQ6hgpojhnhVVadg6HnY7C29gt2KoYKmJtfgOrzl8HtuQXv3k+FRnw7HcM7QaPDBYi8BQC/BETeBwDvBEV+FwB+G0wUxMcBEh8IIT4SlPhQGPFnAQmyLfxZQNTwLCCY7GNpraEsYS7KqCZg2Wyfy2sJffMU0QKWEg+EMOkPr+hqaIRsCZ2J+ieA9CUUYMOOQ5HXCv1rhNoz4+VAz5meO63IqMlYu5ybUACNgKUOrW9vzFdifpFJ+NscJu3ZCG+1WndbtAbZ5VyEyVOEyTfjfpzUX/6c85IgSk9shY6DmsF5eCz/VX4DU5He/Lw8sL8AAAAASUVORK5CYII="
-              />
+              <div>
+                <input
+                  type="file"
+                  accept="image/jpeg, image/png"
+                  // onChange={(e) => displayImageSet(e)}
+                  className="hidden"
+                  id="imageInput"
+                />
+                <label htmlFor="imageInput" className="cursor-pointer">
+                  <img
+                    className="w-10 pt-2 pr-2 hover:transform hover:-translate-y-1 hover:duration-300"
+                    src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsTAAALEwEAmpwYAAADaElEQVR4nO2bTU8TQRyHG6M3v4DfwKMJR4lN3Ckvs0WkswsYFA+iF00IiVKNhYpVEY0KRCC8aFwiypsR5ODBRAzEg1Ex3AxIAJHEg8gBoZQ2/ZtprLal3Wy3LTtb55fMaV+fZ2ZnZ2d3LRYeHp54QXbZKojSgIDJsoBJAIkS7HwhWwiTJkuScbvduw4XyjYkSncFLL1AWBpHmAwhkTjz7I79qhvn5JzZg0TSaQzw9lJwpNwHAE6tZXhkrFuqqPquss8grdj8/JJ98WueJfjicuh59Bi0ZvDZKOQVlWraN23ZNiwf2NbsI1eq9zTBzOwc+P1+YD1K34Aeya+iBAiiNBhe6Gq4CWaJTnjax7RFC8BkObyQ1nxWw2MyaZXlvbEC/vb2Wdzs48PTRK6UvfDSRFx4MwnQC1956uxiQnizCNALX1NbByurqzcsakGMC0gFfsPrpbu4YloBSurw5hWgpAfenAIUvfDO+lh48wlQ0gtvLgFK+uHNI0BJAd7r3VTbNfsClMzBsy9AySw82wIUnfBO11XY9NFJIzCvgP7hkYzDdz3shYLiMvU5RmSQgNITpzNd86HpNbqdgImPOQGdD3qThPckBU8TuT1zAoLBILR29GQMnjkBHz9NQ2t7N8wvfo2S0Hy/UxX+Yt018Pm2dB2TGQE/Vn4CLjkWOsbR0pPweWY2SsL1pntph2dKgBJzu4uVQFtHuuGZEeD3B6AsTo9PJXyYmg4NZhpvt0Qtu1SfOjwzAsYn3ibd26cDnhkBNbV1hsAzIWBhcQlsdtkQeCYEtLR1aYJP1zXPlID19Q0oIsdVwasvuOD1m0kIBAKQiRgqYHTsZVxo0VEBd1o74MvcPGQ6hgpojhnhVVadg6HnY7C29gt2KoYKmJtfgOrzl8HtuQXv3k+FRnw7HcM7QaPDBYi8BQC/BETeBwDvBEV+FwB+G0wUxMcBEh8IIT4SlPhQGPFnAQmyLfxZQNTwLCCY7GNpraEsYS7KqCZg2Wyfy2sJffMU0QKWEg+EMOkPr+hqaIRsCZ2J+ieA9CUUYMOOQ5HXCv1rhNoz4+VAz5meO63IqMlYu5ybUACNgKUOrW9vzFdifpFJ+NscJu3ZCG+1WndbtAbZ5VyEyVOEyTfjfpzUX/6c85IgSk9shY6DmsF5eCz/VX4DU5He/Lw8sL8AAAAASUVORK5CYII="
+                    alt="Upload Image"
+                  />
+                </label>
+              </div>
             </div>
           </div>
         </div>
@@ -125,16 +178,16 @@ const Profile = () => {
             className="flex   fixed  z-50 justify-center items-center w-full md:inset-0 max-h-full backdrop-filter backdrop-blur-sm"
           >
             <div className="relative  w-full  max-w-md max-h-full">
-              <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+              <div className="relative bg-white rounded-lg shadow">
+                <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
+                  <h3 className="text-lg font-semibold text-gray-900">
                     Edit Profile
                   </h3>
 
                   <button
-                    onClick={close}
+                    onClick={toggleModal}
                     type="button"
-                    className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                    className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
                     data-modal-toggle="crud-modal"
                   >
                     <svg
@@ -160,7 +213,7 @@ const Profile = () => {
                     <div className="col-span-2">
                       <label
                         htmlFor="name"
-                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                        className="block mb-2 text-sm font-medium text-gray-900"
                       >
                         Name
                       </label>
@@ -169,7 +222,7 @@ const Profile = () => {
                         name="name"
                         id="name"
                         onChange={handlechange}
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                         placeholder={name}
                         required=""
                       />
@@ -177,7 +230,7 @@ const Profile = () => {
                     <div className="col-span-2">
                       <label
                         htmlFor="phone"
-                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                        className="block mb-2 text-sm font-medium text-gray-900"
                       >
                         Phone
                       </label>
@@ -211,4 +264,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default TutorProfileForm;

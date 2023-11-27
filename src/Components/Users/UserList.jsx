@@ -1,25 +1,52 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import AxiosInstance from "../../Axios/AxiosInstance";
+import Swal from "sweetalert2";
 
 const UserList = () => {
   const [users, setUsers] = useState([]);
+
   useEffect(() => {
-    axios
-      .get("http://localhost:3000/admin/userlist")
-      .then((res) => setUsers(res.data));
+    AxiosInstance.get("/admin/userlist").then((res) => setUsers(res.data));
   }, [setUsers, users]);
 
   const accessChange = async (email, isAccess) => {
-    const res = await axios.put("http://localhost:3000/admin/userAccess", {
-      email,
-      isAccess,
-    });
-    setUsers((preusers) => {
-      return preusers.map((user) =>
-        user.email === res.data.email
-          ? { ...user, isAccess: res.data.isAccess }
-          : user
-      );
+    const actionText = isAccess ? "Block" : "Unblock";
+    const onConfirm = isAccess ? "Blocked" : "UnBlocked";
+    Swal.fire({
+      title: "Are you sure",
+      text: `You want to ${actionText} this user!`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#fea663",
+      cancelButtonColor: "#d33",
+      confirmButtonText: `Yes, ${actionText} User!`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        AxiosInstance.put("/admin/userAccess", {
+          email,
+          isAccess,
+        })
+          .then((response) => {
+            Swal.fire({
+              title: `${onConfirm}`,
+              text: `The user is ${onConfirm}.`,
+              icon: "success",
+            });
+
+            // Assuming response.data contains updated user information
+            setUsers((prevUsers) => {
+              return prevUsers.map((user) =>
+                user.email === response.data.email
+                  ? { ...user, isAccess: response.data.isAccess }
+                  : user
+              );
+            });
+          })
+          .catch((error) => {
+            // Handle error if the axios request fails
+            console.error("Error blocking user:", error);
+          });
+      }
     });
   };
 
@@ -63,13 +90,15 @@ const UserList = () => {
             >
               {user.isAccess ? "Active" : "Inactive"}
             </td>
-            <td
-              onClick={() => accessChange(user.email, user.isAccess)}
-              className={`px-6 py-4 w-72 text-center cursor-pointer whitespace-no-wrap ${
-                !user.isAccess ? "text-green-500" : "text-red-500"
-              }`}
-            >
-              {user.isAccess ? "Block" : "Unblock"}
+            <td className="px-6 py-4 text-center whitespace-no-wrap">
+              <button
+                onClick={() => accessChange(user.email, user.isAccess)}
+                className={`cursor-pointer ${
+                  !user.isAccess ? "text-green-500" : "text-red-500"
+                } border-2 border-gray-300 rounded-md w-24 h-10`}
+              >
+                {user.isAccess ? "Block" : "Unblock"}
+              </button>
             </td>
           </tr>
         ))}

@@ -6,7 +6,7 @@ const UserSignin = () => {
   return (
     <>
       <UserNavbar />
-      <SignIn/>
+      <SignIn />
       <Footer />
     </>
   );

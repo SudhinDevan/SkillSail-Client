@@ -3,10 +3,11 @@ import { Navigate, useLocation } from "react-router-dom";
 
 // eslint-disable-next-line react/prop-types
 const ProtectedAuthRoutes = ({ children }) => {
-  const { id } = useSelector((state) => state.user);
+  const state = useSelector((state) => state.user);
+
   const location = useLocation();
 
-  return id ? (
+  return state.role === 2000 ? (
     <Navigate to="/" state={{ from: location.pathname }} replace />
   ) : (
     children

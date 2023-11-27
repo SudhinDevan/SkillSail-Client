@@ -3,7 +3,7 @@ import UserNavbar from "../../Components/Navbar/UserNavbar";
 import { useLocation, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import { useState } from "react";
-import axios from "axios";
+import AxiosInstance from "../../Axios/AxiosInstance";
 import { useDispatch } from "react-redux";
 import { userLogin } from "../../Redux/userSlice";
 
@@ -23,7 +23,7 @@ const OtpVerify = () => {
 
   const handleVerifyAccount = async () => {
     try {
-      const res = await axios.post("http://localhost:3000/verifyOtp", {
+      const res = await AxiosInstance.post("/verifyOtp", {
         data,
         otpValues,
       });

@@ -4,9 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { userLogout } from "../../Redux/userSlice";
 import toast, { Toaster } from "react-hot-toast";
-import axios from "axios";
+import AxiosInstance from "../../Axios/AxiosInstance";
 import Logo from "../Logo";
-axios.defaults.withCredentials = true;
+// AxiosInstance.defaults.withCredentials = true;
 
 const UserNavbar = () => {
   const dispatch = useDispatch();
@@ -17,12 +17,11 @@ const UserNavbar = () => {
     setToggle(!toggle);
   };
 
-  const { id } = useSelector((state) => state.user);
-  // const myPromise = fetchData();
+  const state = useSelector((state) => state.user);
 
   const handleLogout = async () => {
     try {
-      const res = await axios.post("http://localhost:3000/logout");
+      const res = await AxiosInstance.post("/logout");
       if (res.status === 200) {
         toast.success("Successfully logged out!");
         dispatch(userLogout());
@@ -55,24 +54,24 @@ const UserNavbar = () => {
           </ul>
         </div>
         <div className="hidden md:flex gap-4">
-          {!id ? (
+          {!state.id ? (
             <>
-              <span
-                className="border-black border p-2 cursor-pointer"
+              <button
+                className="border-black border p-2 cursor-pointer hover:bg-black hover:text-white"
                 onClick={() => navigate("/login")}
               >
                 LOGIN
-              </span>
-              <span
-                className="bg-black text-white p-2 cursor-pointer"
+              </button>
+              <button
+                className="p-2 border border-black cursor-pointer hover:bg-black hover:text-white"
                 onClick={() => navigate("/signup")}
               >
                 SIGNUP
-              </span>
+              </button>
             </>
           ) : (
             <span
-              className="bg-black text-white p-2 cursor-pointer"
+              className="bg-black text-white p-2 cursor-pointer  hover:bg-white hover:text-black border border-"
               onClick={handleLogout}
             >
               LOGOUT
@@ -97,7 +96,7 @@ const UserNavbar = () => {
             <li className="p-3" onClick={() => navigate("/profile")}>
               PROFILE
             </li>
-            {!id ? (
+            {!state.role === 2000 ? (
               <>
                 <li className="p-3" onClick={() => navigate("/login")}>
                   LOGIN

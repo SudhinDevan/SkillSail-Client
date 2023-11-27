@@ -27,9 +27,15 @@ const AuthRoutes = () => {
             </ProtectedAuthRoutes>
           }
         />
-        <Route path="/" element={<Home />} />
-        <Route path="/verifyOtp" element={<OtpVerify />} />
-
+        <Route path="/" element={<Home />} exact />
+        <Route
+          path="/verifyOtp"
+          element={
+            <ProtectedAuthRoutes>
+              <OtpVerify />
+            </ProtectedAuthRoutes>
+          }
+        />
         <Route
           path="/profile"
           element={

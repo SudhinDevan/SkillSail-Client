@@ -1,4 +1,4 @@
-import axios from "axios";
+import AxiosInstance from "../../Axios/AxiosInstance";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -7,7 +7,7 @@ import toast, { Toaster } from "react-hot-toast";
 
 const SignIn = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  let navigate = useNavigate();
 
   const [inputs, setInputs] = useState({
     email: "",
@@ -22,12 +22,10 @@ const SignIn = () => {
   };
 
   const sendRequest = async () => {
-    const res = await axios
-      .post("http://localhost:3000/login", {
-        email: inputs.email,
-        password: inputs.password,
-      })
-      .catch((err) => console.log(err.message));
+    const res = await AxiosInstance.post("/login", {
+      email: inputs.email,
+      password: inputs.password,
+    }).catch((err) => console.log(err.message));
 
     const data = await res.data;
     return { ...data, status: res.status };
@@ -43,18 +41,38 @@ const SignIn = () => {
         if (res.status === 201) {
           toast.remove(toastId);
           navigate("/verifyOtp", { state: res.user });
-        } else if (res.status === 200) {
+        } else if (res.status === 200 && res.user.role === 2000) {
+          console.log("hello1");
           toast.remove(toastId);
-          const { id, name, email, phone } = res.user;
+          const { id, name, email, phone, role } = res.user;
           dispatch(
             userLogin({
               id,
               name,
               email,
               phone,
+              role,
             })
           );
+          console.log("why1");
           navigate("/");
+        } else if (res.status === 200 && res.user.role === 3000) {
+          console.log("hello2");
+          toast.remove(toastId);
+          const { id, name, email, phone, role } = res.user;
+          console.log(name);
+          dispatch(
+            userLogin({
+              id,
+              name,
+              email,
+              phone,
+              role,
+            })
+          );
+          console.log("why2");
+          navigate("/tutor/dashboard");
+          console.log("why3");
         }
       })
       .catch(() => {
@@ -111,8 +129,7 @@ const SignIn = () => {
             <div className="flex justify-center py-5 lg:mt-5">
               <button
                 type="submit"
-                style={{ backgroundColor: "#004787" }}
-                className="py-2 px-36 items-center text-white text-xl font-semibold"
+                className="py-2 px-36 bg-blue-800 hover:bg-blue-700 items-center text-white text-xl font-semibold"
               >
                 SignIn
               </button>

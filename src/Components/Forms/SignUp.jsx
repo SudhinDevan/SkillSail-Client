@@ -1,4 +1,4 @@
-import axios from "axios";
+import AxiosInstance from "../../Axios/AxiosInstance";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
@@ -78,8 +78,7 @@ const SignUp = () => {
       password: inputs.password,
       role: isChecked ? 3000 : 2000,
     };
-    await axios
-      .post("http://localhost:3000/signup", userData)
+    await AxiosInstance.post("/signup", userData)
       .then((response) => {
         if (response) {
           console.log();
@@ -191,8 +190,7 @@ const SignUp = () => {
               </div>
               <button
                 type="submit"
-                style={{ backgroundColor: "#004787" }}
-                className="mx-auto mt-6 block text-white font-semibold py-3 px-16"
+                className="mx-auto mt-6 block bg-blue-800 hover:bg-blue-700 text-white font-semibold py-3 px-16"
               >
                 Sign Up
               </button>

@@ -8,6 +8,7 @@ export const userSlice = createSlice({
     phone: "",
     id: "",
     token: "",
+    role: "",
   },
   reducers: {
     userLogin: (state, action) => {
@@ -16,6 +17,7 @@ export const userSlice = createSlice({
       state.email = action.payload.email;
       state.phone = action.payload.phone;
       state.token = action.payload.token;
+      state.role = action.payload.role;
     },
     userLogout: (state) => {
       state.id = "";
@@ -23,9 +25,12 @@ export const userSlice = createSlice({
       state.email = "";
       state.phone = "";
       state.token = "";
+      state.role = "";
     },
   },
 });
 
+const userReducer = userSlice.reducer;
 export const { userLogin, userLogout } = userSlice.actions;
-export const userReducer = userSlice.reducer;
+
+export default userReducer;

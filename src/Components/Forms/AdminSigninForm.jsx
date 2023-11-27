@@ -1,8 +1,9 @@
-import axios from "axios";
+import AxiosInstance from "../../Axios/AxiosInstance";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { adminLogin } from "../../Redux/adminSlice";
+import { userLogin } from "../../Redux/userSlice";
+import toast, { Toaster } from "react-hot-toast";
 
 const SignIn = () => {
   const dispatch = useDispatch();
@@ -20,25 +21,42 @@ const SignIn = () => {
   };
 
   const sendRequest = async () => {
-    const res = await axios
-      .post("http://localhost:3000/admin/login", {
+    let toastId;
+    try {
+      // toastId = toast.loading("validating...");
+      const res = await AxiosInstance.post("/admin/login", {
         email: inputs.email,
         password: inputs.password,
-      })
-      .catch((err) => console.log(err));
-    const data = await res.data;
-    console.log(data);
-    return data;
+      });
+      const data = res.data;
+      return data;
+    } catch (err) {
+      toast.remove(toastId);
+      toast.error(err.response.data.message || "An error occurred", {
+        duration: 2000,
+      });
+      throw err; // Re-throw the error to be caught by the calling function
+    }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    sendRequest()
-      .then(dispatch(adminLogin()))
-      .then(() => navigate("/admin/dashboard"))
-      .catch((error) => {
-        console.error("Login failed:", error);
-      });
+    try {
+      const data = await sendRequest();
+      console.log("data: ", data.user);
+      toast.success("Successfully Logged In");
+      setTimeout(() => {
+        dispatch(
+          userLogin({
+            role: Number(data.user.role),
+            email: data.user.email,
+          })
+        );
+        navigate("/admin/dashboard");
+      }, 1500);
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
   };
 
   return (
@@ -87,6 +105,7 @@ const SignIn = () => {
           </form>
         </div>
       </div>
+      <Toaster />
     </>
   );
 };

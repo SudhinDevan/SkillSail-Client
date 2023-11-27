@@ -1,26 +1,52 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import AxiosInstance from "../../Axios/AxiosInstance";
+import Swal from "sweetalert2";
 
 const TeacherList = () => {
   const [teachers, setTeachers] = useState([]);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3000/admin/teachers")
-      .then((res) => setTeachers(res.data));
+    AxiosInstance.get("/admin/teachers").then((res) => setTeachers(res.data));
   }, [teachers]);
 
   const accessChange = async (email, isAccess) => {
-    const res = await axios.put("http://localhost:3000/admin/teacherAccess", {
-      email,
-      isAccess,
-    });
-    setTeachers((preUsers) => {
-      return preUsers.map((teacher) =>
-        teacher.email === res.data.email
-          ? { ...teacher, isAccess: res.data.isAccess }
-          : teacher
-      );
+    const actionText = isAccess ? "Block" : "Unblock";
+    const onConfirm = isAccess ? "Blocked" : "Unblocked";
+
+    Swal.fire({
+      title: "Are you sure",
+      text: `You want to ${actionText} this user!`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#fea663",
+      cancelButtonColor: "#d33",
+      confirmButtonText: `Yes, ${actionText} User!`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        AxiosInstance.put("/admin/teacherAccess", {
+          email,
+          isAccess,
+        })
+          .then((response) => {
+            Swal.fire({
+              title: `${onConfirm}`,
+              text: `The user is ${onConfirm}.`,
+              icon: "success",
+            });
+
+            setTeachers((preTeachers) => {
+              return preTeachers.map((teacher) =>
+                teacher.email === response.data.email
+                  ? { ...teacher, isAccess: response.data.isAccess }
+                  : teacher
+              );
+            });
+          })
+          .catch((error) => {
+            // Handle error if the axios request fails
+            console.error("Error updating teacher access:", error);
+          });
+      }
     });
   };
 
@@ -64,13 +90,15 @@ const TeacherList = () => {
             >
               {teacher.isAccess ? "Active" : "Inactive"}
             </td>
-            <td
-              onClick={() => accessChange(teacher.email, teacher.isAccess)}
-              className={`px-6 py-4 w-72 text-center cursor-pointer whitespace-no-wrap ${
-                !teacher.isAccess ? "text-green-500" : "text-red-500"
-              }`}
-            >
-              {teacher.isAccess ? "Block" : "Unblock"}
+            <td className="px-6 py-4 text-center whitespace-no-wrap">
+              <button
+                onClick={() => accessChange(teacher.email, teacher.isAccess)}
+                className={`cursor-pointer border-2 border-gray-300 rounded-md w-24 h-10 ${
+                  !teacher.isAccess ? "text-green-500" : "text-red-500"
+                }`}
+              >
+                {teacher.isAccess ? "Block" : "Unblock"}
+              </button>
             </td>
           </tr>
         ))}
