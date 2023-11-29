@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { MdMenu } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
-import Logo from "../Logo";
+import Logo from "../HelperComponents/Logo";
 import { useState } from "react";
 import AxiosInstance from "../../Axios/AxiosInstance";
 import toast, { Toaster } from "react-hot-toast";
@@ -44,13 +44,23 @@ const TutorNavbar = () => {
             </div>
             <div className="hidden md:flex justify-content-between">
               <ul className="flex gap-20 font-semibold">
-                <li>HOME</li>
-                <li>MY CLASSES</li>
-                <li>CLASSES</li>
+                <span
+                  onClick={() => navigate("/tutor/dashboard")}
+                  className="cursor-pointer hover:text-orange-400 transition-colors duration-200"
+                >
+                  HOME
+                </span>
+                <span
+                  className="cursor-pointer hover:text-orange-400 transition-colors duration-200"
+                  onClick={() => navigate("/tutor/runningCourse")}
+                >
+                  MY COURSES
+                </span>
+                <li>COURSES</li>
                 <li>CHATS</li>
                 <li>BLOGS</li>
                 <span
-                  className="cursor-pointer hover:text-orange-400"
+                  className="cursor-pointer hover:text-orange-400 transition-colors duration-200"
                   onClick={() => navigate("/tutor/profile")}
                 >
                   PROFILE
@@ -74,10 +84,11 @@ const TutorNavbar = () => {
             </div>
           </header>
           {!toggle && (
-            <div className="">
-              <ul className="p-3 font-semibold flex flex-col items-end">
+            <div className="absolute w-full z-50">
+              <ul className="p-3 font-semibold bg-white bg-opacity-90 flex flex-col items-end">
                 <li className="p-3">HOME</li>
-                <li className="p-3">MY CLASSES</li>
+                <li className="p-3">MY COURSES</li>
+                <li className="p-3">COURSES</li>
                 <li className="p-3">CHATS</li>
                 <li className="p-3">BLOGS</li>
                 <li className="p-3" onClick={() => navigate("/profile")}>
@@ -119,7 +130,7 @@ const TutorNavbar = () => {
                 <li className="p-3">COURSE</li>
                 <li className="p-3">MY LEARNING</li>
                 <li className="p-3">BLOG</li>
-                <li className="p-3" onClick={() => navigate("/profile")}>
+                <li className="p-3" onClick={() => navigate("/tutor/profile")}>
                   PROFILE
                 </li>
                 <li className="p-3" onClick={() => navigate("/login")}>

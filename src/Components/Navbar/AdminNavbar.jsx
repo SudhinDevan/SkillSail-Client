@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { MdMenu } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
-import Logo from "../Logo";
+import Logo from "../HelperComponents/Logo";
 import { useState } from "react";
 import AxiosInstance from "../../Axios/AxiosInstance";
 import toast, { Toaster } from "react-hot-toast";

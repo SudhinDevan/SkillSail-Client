@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { userLogout } from "../../Redux/userSlice";
 import toast, { Toaster } from "react-hot-toast";
 import AxiosInstance from "../../Axios/AxiosInstance";
-import Logo from "../Logo";
+import Logo from "../HelperComponents/Logo";
 // AxiosInstance.defaults.withCredentials = true;
 
 const UserNavbar = () => {
@@ -46,7 +46,7 @@ const UserNavbar = () => {
             <li>MY LEARNING</li>
             <li>BLOG</li>
             <li
-              className="hover:text-orange-400 cursor-pointer"
+              className="hover:text-teal-500 cursor-pointer transition duration-300"
               onClick={() => navigate("/profile")}
             >
               PROFILE
@@ -87,8 +87,8 @@ const UserNavbar = () => {
         </div>
       </header>
       {!toggle && (
-        <div className="">
-          <ul className="p-3 font-semibold flex flex-col items-end">
+        <div className="absolute w-full">
+          <ul className="p-3 font-semibold flex flex-col items-end bg-white bg-opacity-95 text-black">
             <li className="p-3">HOME</li>
             <li className="p-3">COURSE</li>
             <li className="p-3">MY LEARNING</li>

@@ -1,16 +1,15 @@
-import { useSelector } from "react-redux";
 import TutorNavbar from "../../Components/Navbar/TutorNavbar";
 import Footer from "../../Components/Navbar/Footer";
+import TeacherHome from "../../Components/Teachers/TeacherHome";
 
 const TutorDashboard = () => {
-  const state = useSelector((state) => state.user);
 
   return (
-    <>
+    <div className="h-screen+50 md:h-screen">
       <TutorNavbar />
-      <h1>Hello Teacher: {state.name}</h1>
+      <TeacherHome />
       <Footer />
-    </>
+    </div>
   );
 };
 

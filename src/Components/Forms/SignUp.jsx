@@ -31,7 +31,7 @@ const SignUp = () => {
     e.preventDefault();
     const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
     const namePattern = /^[a-zA-Z._ -]+$/;
-    const passwordPattern = /^\d{6}$/;
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/; //condition: 1UC 1LC 1digit and strength 8
     const phonePattern = /^\d{10}$/;
     if (inputs.name.trim() === "" || !namePattern.test(inputs.name)) {
       // showErrorToast("Enter a Valid Name");
@@ -59,9 +59,12 @@ const SignUp = () => {
       !passwordPattern.test(inputs.password)
     ) {
       // showErrorToast("Password Must be atleast 6 digits");
-      toast.error("Password must be atleast 6 digits", {
-        duration: 1500,
-      });
+      toast.error(
+        "Password must be atleast 8 digits, Should contain an Uppercase Letter, a Lowercase Letter and a Number",
+        {
+          duration: 3000,
+        }
+      );
       return;
     }
     if (inputs.password !== inputs.confirmPassword) {
@@ -156,6 +159,13 @@ const SignUp = () => {
                   placeholder="Password"
                   className="border h-10 border-black p-2"
                 />
+                {inputs.password.length > 0 && (
+                  <p className="text-sm text-gray-500 mt-2 text-justify">
+                    Password must be at least 8 characters long and contain at
+                    least one uppercase letter, one lowercase letter, and one
+                    digit.
+                  </p>
+                )}
               </div>
               <div className="flex flex-col p-3 w-96 max-w-md">
                 <label className="pb-3 font-semibold">Confirm Password: </label>
