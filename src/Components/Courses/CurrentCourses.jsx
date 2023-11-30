@@ -1,9 +1,10 @@
 import { useSelector } from "react-redux";
 import AxiosInstance from "../../Axios/AxiosInstance";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 
 const CurrentCourse = () => {
+  const [courses, setCourses] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { email } = useSelector((state) => state.user);
   const [finalImage, setFinalImage] = useState(null);
@@ -15,6 +16,21 @@ const CurrentCourse = () => {
     price: "",
     email: email,
   });
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const response = await AxiosInstance.get("/tutor/courseList", {
+          params: { email },
+        });
+        console.log("response: ", response.data);
+        setCourses(response.data.coursesList || []);
+      } catch (error) {
+        console.error("Error fetching course list:", error);
+      }
+    };
+    fetchCourses();
+  }, [isModalVisible, email]);
 
   const isValidFileUpload = (file) => {
     const validExtensions = ["png", "jpeg", "jpg"];
@@ -110,36 +126,36 @@ const CurrentCourse = () => {
 
   return (
     <>
-      <div className="p-3">
+      <div className="p-6">
         <span className="text-3xl font-bold">Classes: </span>
-        <div className="container mx-auto p-3 border-gray-200">
-          <div className="flex flex-col sm:flex-row">
-            <div className="w-96 sm:w-1/2  h-72 p-3 flex flex-row cursor-pointer">
-              {/* plus component */}
-              {/* <div className="p-4 h-60 border mr-3  rounded shadow-sm border-dashed border-black  bg-gray-300 hover:bg-gray-400">
+        <div className="container mx-auto p-3 border-gray-200 overflow-x-auto">
+          <div className="flex flex-wrap">
+            {courses.map((course) => (
+              <div
+                key={course._id}
+                className="p-4 h-60 border mr-3 mb-3 w-80 rounded shadow-sm flex flex-col items-center justify-center bg-gray-300 hover:bg-gray-400"
+              >
                 <img
-                  src="../../plus.png"
+                  src={course.thumbnail.url}
                   alt="plus"
-                  className="w-36 mx-20 opacity-80 hover:opacity-100"
-                  onClick={toggleModal}
-                />
-                
-                <h1 className="text-3xl font-bold text-gray-700 text-center hover:text-gray-800 justify-center p-2">
-                  ADD COURSE
-                </h1>
-              </div> */}
-              {/* plus component */}
-              <div className="p-4 h-60 border rounded shadow-sm border-dashed border-black  bg-gray-300 hover:bg-gray-400">
-                <img
-                  src="../../plus.png"
-                  alt="plus"
-                  className="w-36 mx-20 opacity-80 hover:opacity-100"
-                  onClick={toggleModal}
+                  className="w-52 h-40 opacity-80 hover:opacity-100"
                 />
                 <h1 className="text-3xl font-bold text-gray-700 text-center hover:text-gray-800 justify-center p-2">
-                  ADD COURSE
+                  {course.courseName}
                 </h1>
               </div>
+            ))}
+            {/* plus component */}
+            <div className="p-4 h-60 w-80 border mb-3 flex flex-col justify-center items-center rounded shadow-sm border-dashed border-black bg-gray-300 hover:bg-gray-400">
+              <img
+                src="../../plus.png"
+                alt="plus"
+                className="w-36 opacity-80 hover:opacity-100"
+                onClick={toggleModal}
+              />
+              <h1 className="text-3xl font-bold text-gray-700 text-center hover:text-gray-800 justify-center">
+                ADD COURSE
+              </h1>
             </div>
           </div>
         </div>
