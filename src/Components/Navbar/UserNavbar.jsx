@@ -41,7 +41,12 @@ const UserNavbar = () => {
         </div>
         <div className="hidden md:flex justify-content-between">
           <ul className="flex gap-20 font-semibold">
-            <li>HOME</li>
+            <span
+              className="hover:text-teal-500 cursor-pointer transition duration-300"
+              onClick={() => navigate("/")}
+            >
+              HOME
+            </span>
             <li>COURSE</li>
             <li>MY LEARNING</li>
             <li>BLOG</li>
@@ -87,7 +92,7 @@ const UserNavbar = () => {
         </div>
       </header>
       {!toggle && (
-        <div className="absolute w-full">
+        <div className="absolute w-full z-10">
           <ul className="p-3 font-semibold flex flex-col items-end bg-white bg-opacity-95 text-black">
             <li className="p-3">HOME</li>
             <li className="p-3">COURSE</li>

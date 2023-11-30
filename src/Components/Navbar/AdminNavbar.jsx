@@ -51,12 +51,17 @@ const AdminNavbar = () => {
                   STUDENTS
                 </span>
                 <span
-                  className="cursor-pointer hover:text-orange-400"
                   onClick={() => navigate("/admin/teachers")}
+                  className="cursor-pointer hover:text-orange-400"
                 >
                   TEACHERS
                 </span>
-                <li>TEACHER REQUEST</li>
+                <span
+                  className="cursor-pointer hover:text-orange-400"
+                  onClick={() => navigate("/admin/teacherRequest")}
+                >
+                  TEACHER REQUEST
+                </span>
                 <li>ALL COURSES</li>
                 <li>TRANSACTIONS</li>
               </ul>

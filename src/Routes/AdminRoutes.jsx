@@ -4,6 +4,7 @@ import AdminDashboard from "../Pages/Home/AdminDashboard";
 import ProtectedAdminRoutes from "../Utils/ProtectedAdminRoutes";
 import AdminAuthRoute from "../Utils/AdminAuthRoute";
 import UserListing from "../Pages/Listing/UserListing";
+import TeacherApprovalListing from "../Pages/Listing/TeacherApprovalListing";
 import TeacherListing from "../Pages/Listing/TeacherListing";
 
 const AdminRoutes = () => {
@@ -31,6 +32,14 @@ const AdminRoutes = () => {
           element={
             <AdminAuthRoute>
               <UserListing />
+            </AdminAuthRoute>
+          }
+        />
+        <Route
+          path="/admin/teacherRequest"
+          element={
+            <AdminAuthRoute>
+              <TeacherApprovalListing />
             </AdminAuthRoute>
           }
         />

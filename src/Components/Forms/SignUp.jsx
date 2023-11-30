@@ -3,9 +3,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import "react-toastify/dist/ReactToastify.css";
+import { IoIosEyeOff } from "react-icons/io";
+import { IoIosEye } from "react-icons/io";
 
 const SignUp = () => {
   const navigate = useNavigate();
+  const [finalImage, setFinalImage] = useState(null);
   const [inputs, setInputs] = useState({
     name: "",
     email: "",
@@ -14,10 +17,42 @@ const SignUp = () => {
     confirmPassword: "",
   });
 
+  const isValidFileUpload = (file) => {
+    const validExtensions = ["png", "jpeg", "jpg", "doc", "docx", "pdf"];
+    const fileExtension = file.name.split(".").pop().toLowerCase();
+    return validExtensions.includes(fileExtension);
+  };
+
+  const handleImage = (e) => {
+    if (isValidFileUpload(e.target.files[0])) {
+      ImageToBase(e.target.files[0]);
+    } else {
+      toast.error("Invalid file Format");
+      return;
+    }
+  };
+
+  const ImageToBase = (file) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      setFinalImage(reader.result);
+    };
+    reader.onerror = (error) => {
+      toast.error("Error reading file: ", error.message);
+    };
+  };
+
   const [isChecked, setIsChecked] = useState(false);
 
   const handleToggle = () => {
     setIsChecked(!isChecked);
+  };
+
+  const [viewPassword, setViewPassword] = useState(false);
+
+  const passwordView = () => {
+    setViewPassword((prev) => !prev);
   };
 
   const handleChange = (e) => {
@@ -33,6 +68,7 @@ const SignUp = () => {
     const namePattern = /^[a-zA-Z._ -]+$/;
     const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/; //condition: 1UC 1LC 1digit and strength 8
     const phonePattern = /^\d{10}$/;
+
     if (inputs.name.trim() === "" || !namePattern.test(inputs.name)) {
       // showErrorToast("Enter a Valid Name");
       toast.error("Enter a valid name", {
@@ -80,12 +116,18 @@ const SignUp = () => {
       phone: inputs.phone,
       password: inputs.password,
       role: isChecked ? 3000 : 2000,
+      isAccess: isChecked ? false : true,
+      verifyDocument: finalImage,
     };
+    let toastId = toast.loading("Loading...");
+    if (viewPassword === true) {
+      passwordView();
+    }
     await AxiosInstance.post("/signup", userData)
       .then((response) => {
         if (response) {
           console.log();
-          // showToast("Registration successful");
+          toast.remove(toastId);
           toast.success("Registration Successful", {
             duration: 1500,
           });
@@ -155,10 +197,25 @@ const SignUp = () => {
                   value={inputs.password}
                   onChange={handleChange}
                   name="password"
-                  type="password"
+                  type={!viewPassword ? `password` : `text`}
                   placeholder="Password"
                   className="border h-10 border-black p-2"
                 />
+                {!viewPassword ? (
+                  <div
+                    className="absolute left-1/2 mx-36 px-3 flex my-12 cursor-pointer"
+                    onClick={passwordView}
+                  >
+                    <IoIosEyeOff />
+                  </div>
+                ) : (
+                  <div
+                    className="absolute left-1/2 mx-36 px-3 flex my-12 cursor-pointer"
+                    onClick={passwordView}
+                  >
+                    <IoIosEye />
+                  </div>
+                )}
                 {inputs.password.length > 0 && (
                   <p className="text-sm text-gray-500 mt-2 text-justify">
                     Password must be at least 8 characters long and contain at
@@ -197,6 +254,21 @@ const SignUp = () => {
                     Signup as a Teacher
                   </span>
                 </label>
+              </div>
+              <div className={`col-span-2 mt-3 ${!isChecked ? "hidden" : ""}`}>
+                <label
+                  htmlFor="formFileLg"
+                  className="block mb-2 text-sm font-medium text-gray-900"
+                >
+                  Attach verifying Document
+                </label>
+                <input
+                  className="bg-gray-50 border border-gray-300 text-gray-500 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 p-2.5 relative m-0 block w-96 max-w-md flex-auto cursor-pointer border-solid bg-clip-padding px-3 py-[0.32rem] font-normal leading-[2.15] transition duration-300 ease-in-out file:-mx-3 file:-my-[0.32rem] file:cursor-pointer file:overflow-hidden file:rounded-none file:border-0 file:border-solid file:border-inherit file:bg-neutral-400 file:px-3 file:py-[0.32rem] file:text-neutral-700 file:transition file:duration-150 file:ease-in-out file:[border-inline-end-width:1px] file:[margin-inline-end:0.75rem] hover:file:bg-neutral-300 focus:border-primary focus:text-neutral-700 focus:shadow-te-primary focus:outline-none"
+                  id="formFileLg"
+                  type="file"
+                  accept=".png, .jpeg, .jpg, .doc, .docx, .pdf"
+                  onChange={handleImage}
+                />
               </div>
               <button
                 type="submit"

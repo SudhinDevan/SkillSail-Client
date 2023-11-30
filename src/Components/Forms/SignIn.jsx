@@ -4,6 +4,8 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { userLogin } from "../../Redux/userSlice";
 import toast, { Toaster } from "react-hot-toast";
+import { IoIosEyeOff } from "react-icons/io";
+import { IoIosEye } from "react-icons/io";
 
 const SignIn = () => {
   const dispatch = useDispatch();
@@ -13,6 +15,12 @@ const SignIn = () => {
     email: "",
     password: "",
   });
+
+  const [viewPassword, setViewPassword] = useState(false);
+
+  const passwordView = () => {
+    setViewPassword((prev) => !prev);
+  };
 
   const handleChange = (e) => {
     setInputs((prev) => ({
@@ -25,7 +33,14 @@ const SignIn = () => {
     const res = await AxiosInstance.post("/login", {
       email: inputs.email,
       password: inputs.password,
-    }).catch((err) => console.log(err.message));
+    }).catch(() => {
+      toast.remove(toastId);
+      toastId = toast.error("Please wait till the Admin verifies your profile");
+      setTimeout(() => {
+        toast.remove(toastId);
+        navigate("/");
+      }, 3000);
+    });
 
     const data = await res.data;
     return { ...data, status: res.status };
@@ -35,6 +50,9 @@ const SignIn = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (viewPassword === true) {
+      passwordView();
+    }
     toastId = toast.loading("Loading...");
     sendRequest()
       .then((res) => {
@@ -42,9 +60,9 @@ const SignIn = () => {
           toast.remove(toastId);
           navigate("/verifyOtp", { state: res.user });
         } else if (res.status === 200 && res.user.role === 2000) {
-          console.log("hello1");
           toast.remove(toastId);
           const { id, name, email, phone, role } = res.user;
+          const token = res.token;
           dispatch(
             userLogin({
               id,
@@ -52,15 +70,13 @@ const SignIn = () => {
               email,
               phone,
               role,
+              token,
             })
           );
-          console.log("why1");
           navigate("/");
         } else if (res.status === 200 && res.user.role === 3000) {
-          console.log("hello2");
           toast.remove(toastId);
           const { id, name, email, phone, role } = res.user;
-          console.log(name);
           dispatch(
             userLogin({
               id,
@@ -70,14 +86,17 @@ const SignIn = () => {
               role,
             })
           );
-          console.log("why2");
           navigate("/tutor/dashboard");
-          console.log("why3");
+        } else if (res.status === 401) {
+          toast.remove(toastId);
+          toast.error("Please wait till your profile is verified by the admin");
+          setTimeout(() => {
+            navigate("/");
+          }, 3000);
         }
       })
-      .catch(() => {
-        toast.remove(toastId);
-        toast.error("Invalid Credentials");
+      .catch((err) => {
+        console.log(err.message);
       });
   };
 
@@ -107,13 +126,28 @@ const SignIn = () => {
                 Password:{" "}
               </label>
               <input
-                type="password"
+                type={!viewPassword ? `password` : `text`}
                 name="password"
                 value={inputs.password}
                 onChange={handleChange}
                 placeholder="Password"
                 className="border h-10 border-black p-2"
               />
+              {!viewPassword ? (
+                <div
+                  className="absolute left-1/2 mx-36 px-3 flex my-12 cursor-pointer"
+                  onClick={passwordView}
+                >
+                  <IoIosEyeOff />
+                </div>
+              ) : (
+                <div
+                  className="absolute left-1/2 mx-36 px-3 flex my-12 cursor-pointer"
+                  onClick={passwordView}
+                >
+                  <IoIosEye />
+                </div>
+              )}
             </div>
             <div className="px-2 lg:pt-5">
               <h1 className="font-semibold">

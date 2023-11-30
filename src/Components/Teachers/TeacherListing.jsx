@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import AxiosInstance from "../../Axios/AxiosInstance";
 import Swal from "sweetalert2";
 
-const TeacherList = () => {
+const TeacherListing = () => {
   const [teachers, setTeachers] = useState([]);
 
   useEffect(() => {
-    AxiosInstance.get("/admin/teachers").then((res) => setTeachers(res.data));
+    AxiosInstance.get("/admin/teacherListing").then((res) => setTeachers(res.data));
   }, [teachers]);
 
   const accessChange = async (email, isAccess) => {
@@ -107,4 +107,4 @@ const TeacherList = () => {
   );
 };
 
-export default TeacherList;
+export default TeacherListing;

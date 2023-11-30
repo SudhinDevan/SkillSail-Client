@@ -63,44 +63,6 @@ const UserProfileForm = () => {
     }
   };
 
-  // const displayImageSet = (e) => {
-  //   const file = e.target.files[0];
-  //   const reader = new FileReader();
-  //   reader.readAsDataURL(file);
-
-  //   reader.onloadend = () => {
-  //     // console.log('imageData');
-  //     const imageData = reader.result;
-  //     // console.log(imageData);
-  //     setImage(imageData);
-  //     // imageUploader();
-  //   };
-
-  //   // if (e.type === "loadend") {
-  //   //   const imageData = reader.result;
-  //   //   setImage(imageData);
-  //   //   imageUploader();
-  //   // }
-  //   console.log('sdfjdf',image);
-  //   // imageUploader();
-  // };
-
-  // useEffect(()=>{
-  //   imageUploader();
-  // },[image])
-
-  // const imageUploader = async () => {
-  //   console.log("image: ", image);
-  //   try {
-  //     const res = await AxiosInstance.post(
-  //       "/profile/displayimage",
-  //       { image }
-  //     );
-  //     console.log(res.data);
-  //   } catch (error) {
-  //     console.log(error.message);
-  //   }
-  // };
 
   return (
     <>
@@ -265,3 +227,46 @@ const UserProfileForm = () => {
 };
 
 export default UserProfileForm;
+
+
+
+
+
+  // const displayImageSet = (e) => {
+  //   const file = e.target.files[0];
+  //   const reader = new FileReader();
+  //   reader.readAsDataURL(file);
+
+  //   reader.onloadend = () => {
+  //     // console.log('imageData');
+  //     const imageData = reader.result;
+  //     // console.log(imageData);
+  //     setImage(imageData);
+  //     // imageUploader();
+  //   };
+
+  //   // if (e.type === "loadend") {
+  //   //   const imageData = reader.result;
+  //   //   setImage(imageData);
+  //   //   imageUploader();
+  //   // }
+  //   console.log('sdfjdf',image);
+  //   // imageUploader();
+  // };
+
+  // useEffect(()=>{
+  //   imageUploader();
+  // },[image])
+
+  // const imageUploader = async () => {
+  //   console.log("image: ", image);
+  //   try {
+  //     const res = await AxiosInstance.post(
+  //       "/profile/displayimage",
+  //       { image }
+  //     );
+  //     console.log(res.data);
+  //   } catch (error) {
+  //     console.log(error.message);
+  //   }
+  // };

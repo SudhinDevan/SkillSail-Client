@@ -1,15 +1,15 @@
 import AdminNavbar from "../../Components/Navbar/AdminNavbar";
 import Footer from "../../Components/Navbar/Footer";
-import TeacherList from "../../Components/Teachers/TeacherListing";
+import TeacherApprovalList from "../../Components/Teachers/TeacherApprovalList";
 
-const TeacherListing = () => {
+const TeacherApprovalListing = () => {
   return (
     <>
       <AdminNavbar />
-      <TeacherList />
+      <TeacherApprovalList />
       <Footer />
     </>
   );
 };
 
-export default TeacherListing;
+export default TeacherApprovalListing;
