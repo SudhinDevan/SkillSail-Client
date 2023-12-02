@@ -1,9 +1,12 @@
 import { useSelector } from "react-redux";
-import AxiosInstance from "../../Axios/AxiosInstance";
+import UseAxiosPrivate from "../../Hooks/UseAxiosPrivate";
 import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const CurrentCourse = () => {
+  const axiosPrivate = UseAxiosPrivate();
+  const navigate = useNavigate();
   const [courses, setCourses] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { email } = useSelector((state) => state.user);
@@ -20,7 +23,7 @@ const CurrentCourse = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await AxiosInstance.get("/tutor/courseList", {
+        const response = await axiosPrivate.get("/tutor/courseList", {
           params: { email },
         });
         console.log("response: ", response.data);
@@ -30,7 +33,7 @@ const CurrentCourse = () => {
       }
     };
     fetchCourses();
-  }, [isModalVisible, email]);
+  }, [isModalVisible, axiosPrivate, email]);
 
   const isValidFileUpload = (file) => {
     const validExtensions = ["png", "jpeg", "jpg"];
@@ -71,7 +74,7 @@ const CurrentCourse = () => {
 
   const createCourse = async () => {
     try {
-      const res = await AxiosInstance.post("/tutor/createCourse", {
+      const res = await axiosPrivate.post("/tutor/createCourse", {
         inputs,
         image: finalImage,
       });
@@ -130,23 +133,25 @@ const CurrentCourse = () => {
         <span className="text-3xl font-bold">Classes: </span>
         <div className="container mx-auto p-3 border-gray-200 overflow-x-auto">
           <div className="flex flex-wrap">
+            {/* ////////////////////// */}
             {courses.map((course) => (
               <div
                 key={course._id}
-                className="p-4 h-60 border mr-3 mb-3 w-80 rounded shadow-sm flex flex-col items-center justify-center bg-gray-300 hover:bg-gray-400"
+                onClick={() => navigate(`/tutor/courseDetails/${course._id}`)}
+                className="p-4 h-60 border-2 mr-10 mt-4 mb-3 w-80 rounded shadow-md flex flex-col items-center justify-center bg-white hover:bg-gray-100"
               >
                 <img
                   src={course.thumbnail.url}
                   alt="plus"
                   className="w-52 h-40 opacity-80 hover:opacity-100"
                 />
-                <h1 className="text-3xl font-bold text-gray-700 text-center hover:text-gray-800 justify-center p-2">
+                <h1 className="text-xl font-bold text-gray-700 text-center hover:text-gray-800 justify-center p-2">
                   {course.courseName}
                 </h1>
               </div>
             ))}
-            {/* plus component */}
-            <div className="p-4 h-60 w-80 border mb-3 flex flex-col justify-center items-center rounded shadow-sm border-dashed border-black bg-gray-300 hover:bg-gray-400">
+            {/* /////////////////plus component////////////// */}
+            <div className="p-4 h-60 w-80 mr-10 border-2 mt-4 mb-3 flex flex-col justify-center items-center rounded shadow-md  bg-white hover:bg-gray-100">
               <img
                 src="../../plus.png"
                 alt="plus"
@@ -157,6 +162,7 @@ const CurrentCourse = () => {
                 ADD COURSE
               </h1>
             </div>
+            {/* ////////////////////////////////////////////// */}
           </div>
         </div>
         {isModalVisible && (
