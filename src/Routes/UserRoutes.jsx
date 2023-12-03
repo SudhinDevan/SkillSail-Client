@@ -6,6 +6,7 @@ import ProtectedAuthRoutes from "../Utils/ProtectedUserAuthRoutes";
 import OtpVerify from "../Pages/Otp/OtpVerify";
 import UserProfile from "../Pages/Profile/UserProfile";
 import ProtectedUserRoutes from "../Utils/ProtectedUserRoutes";
+import DisplayCourses from "../Pages/DisplayCourses/DisplayCourses";
 
 const AuthRoutes = () => {
   return (
@@ -41,6 +42,22 @@ const AuthRoutes = () => {
           element={
             <ProtectedUserRoutes>
               <UserProfile />
+            </ProtectedUserRoutes>
+          }
+        />
+        <Route
+          path="/courses"
+          element={
+            <ProtectedUserRoutes>
+              <DisplayCourses />
+            </ProtectedUserRoutes>
+          }
+        />
+        <Route
+          path="/courses/:courseId"
+          element={
+            <ProtectedUserRoutes>
+              
             </ProtectedUserRoutes>
           }
         />

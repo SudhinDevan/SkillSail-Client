@@ -2,8 +2,7 @@ import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import UseAxiosPrivate from "../../Hooks/UseAxiosPrivate";
 import toast, { Toaster } from "react-hot-toast";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
+
 // import Lessons from "../HelperComponents/Lessons";
 
 const AboutCourse = ({ courseId }) => {
@@ -163,23 +162,13 @@ const AboutCourse = ({ courseId }) => {
           <div className="p-3 mx-5 w-2/3">
             <span className="text-xl">
               <span className="font-bold">Course Blurb:{` `}</span>
-              {courseDetails.blurb ? (
-                courseDetails.blurb
-              ) : (
-                <Skeleton height={20} width={200} />
-              )}
+              {courseDetails.blurb}
             </span>
           </div>
 
           <div className="p-3 mx-5 w-2/3">
             <span className="font-bold text-lg">Description:{` `} </span>
-            <div className="text-justify">
-              {courseDetails.description ? (
-                courseDetails.description
-              ) : (
-                <Skeleton count={3} />
-              )}
-            </div>
+            <div className="text-justify">{courseDetails.description}</div>
           </div>
           {isModalVisible && (
             <div

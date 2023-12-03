@@ -3,6 +3,7 @@ import UseAxiosPrivate from "../../Hooks/UseAxiosPrivate";
 import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { ScaleLoader } from "react-spinners/ScaleLoader";
 
 const CurrentCourse = () => {
   const axiosPrivate = UseAxiosPrivate();
@@ -11,6 +12,7 @@ const CurrentCourse = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { email } = useSelector((state) => state.user);
   const [finalImage, setFinalImage] = useState(null);
+
   const [inputs, setInputs] = useState({
     coursename: "",
     blurb: "",
@@ -134,34 +136,42 @@ const CurrentCourse = () => {
         <div className="container mx-auto p-3 border-gray-200 overflow-x-auto">
           <div className="flex flex-wrap">
             {/* ////////////////////// */}
-            {courses.map((course) => (
-              <div
-                key={course._id}
-                onClick={() => navigate(`/tutor/courseDetails/${course._id}`)}
-                className="p-4 h-60 border-2 mr-10 mt-4 mb-3 w-80 rounded shadow-md flex flex-col items-center justify-center bg-white hover:bg-gray-100"
-              >
+            {courses ? (
+              courses?.map((course) => (
+                <div
+                  key={course._id}
+                  onClick={() => navigate(`/tutor/courseDetails/${course._id}`)}
+                  className="p-4 h-60 border-2 mr-10 mt-4 mb-3 w-80 rounded shadow-md flex flex-col items-center justify-center bg-white hover:bg-gray-100"
+                >
+                  <img
+                    src={course.thumbnail.url}
+                    alt="Thumbnail Image"
+                    className="w-52 h-40 opacity-80 hover:opacity-100"
+                  />
+                  <h1 className="text-xl font-bold text-gray-700 text-center hover:text-gray-800 justify-center p-2">
+                    {course.courseName}
+                  </h1>
+                </div>
+              ))
+            ) : (
+              <ScaleLoader />
+            )}
+            {/* /////////////////plus component////////////// */}
+            {courses ? (
+              <div className="p-4 h-60 w-80 mr-10 border-2 mt-4 mb-3 flex flex-col justify-center items-center rounded shadow-md  bg-white hover:bg-gray-100">
                 <img
-                  src={course.thumbnail.url}
+                  src="../../plus.png"
                   alt="plus"
-                  className="w-52 h-40 opacity-80 hover:opacity-100"
+                  className="w-36 opacity-80 hover:opacity-100"
+                  onClick={toggleModal}
                 />
-                <h1 className="text-xl font-bold text-gray-700 text-center hover:text-gray-800 justify-center p-2">
-                  {course.courseName}
+                <h1 className="text-3xl font-bold text-gray-700 text-center hover:text-gray-800 justify-center">
+                  ADD COURSE
                 </h1>
               </div>
-            ))}
-            {/* /////////////////plus component////////////// */}
-            <div className="p-4 h-60 w-80 mr-10 border-2 mt-4 mb-3 flex flex-col justify-center items-center rounded shadow-md  bg-white hover:bg-gray-100">
-              <img
-                src="../../plus.png"
-                alt="plus"
-                className="w-36 opacity-80 hover:opacity-100"
-                onClick={toggleModal}
-              />
-              <h1 className="text-3xl font-bold text-gray-700 text-center hover:text-gray-800 justify-center">
-                ADD COURSE
-              </h1>
-            </div>
+            ) : (
+              <ScaleLoader />
+            )}
             {/* ////////////////////////////////////////////// */}
           </div>
         </div>
@@ -265,6 +275,7 @@ const CurrentCourse = () => {
                         className="bg-gray-50 border border-gray-300 text-gray-500 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 p-2.5 relative m-0 block w-full min-w-0 flex-auto cursor-pointer border-solid bg-clip-padding px-3 py-[0.32rem] font-normal leading-[2.15] transition duration-300 ease-in-out file:-mx-3 file:-my-[0.32rem] file:cursor-pointer file:overflow-hidden file:rounded-none file:border-0 file:border-solid file:border-inherit file:bg-neutral-400 file:px-3 file:py-[0.32rem] file:text-neutral-700 file:transition file:duration-150 file:ease-in-out file:[border-inline-end-width:1px] file:[margin-inline-end:0.75rem] hover:file:bg-neutral-300 focus:border-primary focus:text-neutral-700 focus:shadow-te-primary focus:outline-none"
                         id="formFileLg"
                         type="file"
+                        accept=".jpeg,.png,.jpg"
                         onChange={handleImage}
                       />
                     </div>
