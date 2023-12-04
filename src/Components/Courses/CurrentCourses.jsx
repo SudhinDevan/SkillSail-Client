@@ -3,7 +3,6 @@ import UseAxiosPrivate from "../../Hooks/UseAxiosPrivate";
 import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { ScaleLoader } from "react-spinners/ScaleLoader";
 
 const CurrentCourse = () => {
   const axiosPrivate = UseAxiosPrivate();
@@ -136,7 +135,7 @@ const CurrentCourse = () => {
         <div className="container mx-auto p-3 border-gray-200 overflow-x-auto">
           <div className="flex flex-wrap">
             {/* ////////////////////// */}
-            {courses ? (
+            {courses &&
               courses?.map((course) => (
                 <div
                   key={course._id}
@@ -152,12 +151,9 @@ const CurrentCourse = () => {
                     {course.courseName}
                   </h1>
                 </div>
-              ))
-            ) : (
-              <ScaleLoader />
-            )}
+              ))}
             {/* /////////////////plus component////////////// */}
-            {courses ? (
+            {courses && (
               <div className="p-4 h-60 w-80 mr-10 border-2 mt-4 mb-3 flex flex-col justify-center items-center rounded shadow-md  bg-white hover:bg-gray-100">
                 <img
                   src="../../plus.png"
@@ -169,8 +165,6 @@ const CurrentCourse = () => {
                   ADD COURSE
                 </h1>
               </div>
-            ) : (
-              <ScaleLoader />
             )}
             {/* ////////////////////////////////////////////// */}
           </div>

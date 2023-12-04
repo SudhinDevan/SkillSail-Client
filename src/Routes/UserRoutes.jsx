@@ -7,6 +7,7 @@ import OtpVerify from "../Pages/Otp/OtpVerify";
 import UserProfile from "../Pages/Profile/UserProfile";
 import ProtectedUserRoutes from "../Utils/ProtectedUserRoutes";
 import DisplayCourses from "../Pages/DisplayCourses/DisplayCourses";
+import DisplayCourseDetails from "../Pages/CourseDetails/DisplayCourseDetails";
 
 const AuthRoutes = () => {
   return (
@@ -57,7 +58,7 @@ const AuthRoutes = () => {
           path="/courses/:courseId"
           element={
             <ProtectedUserRoutes>
-              
+              <DisplayCourseDetails />
             </ProtectedUserRoutes>
           }
         />

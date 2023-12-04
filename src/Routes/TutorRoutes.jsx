@@ -3,6 +3,7 @@ import TutorDashboard from "../Pages/Home/TutorDashboard";
 import TutorProfile from "../Pages/Profile/TutorProfile";
 import RunningCourse from "../Pages/Course/RunningCourse";
 import CourseDetails from "../Pages/CourseDetails/CourseDetails";
+import ChapterDetails from "../Pages/Chapter/ChapterDetails";
 
 const TutorRoutes = () => {
   return (
@@ -14,6 +15,10 @@ const TutorRoutes = () => {
         <Route
           path="/tutor/courseDetails/:courseId"
           element={<CourseDetails />}
+        />
+        <Route
+          path="/tutor/chapterDetails/:chapterId"
+          element={<ChapterDetails/>}
         />
       </Routes>
     </>

@@ -2,15 +2,16 @@ import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import UseAxiosPrivate from "../../Hooks/UseAxiosPrivate";
 import toast, { Toaster } from "react-hot-toast";
-
-// import Lessons from "../HelperComponents/Lessons";
+import { useNavigate } from "react-router-dom";
 
 const AboutCourse = ({ courseId }) => {
   const AxiosInstance = UseAxiosPrivate();
+  const navigate = useNavigate();
   const [courseDetails, setCourseDetails] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [chapterDetails, setChapterDetails] = useState(null);
   const [file, setFile] = useState(null);
+
   const [inputs, setInputs] = useState({
     chapterName: "",
     description: "",
@@ -35,7 +36,7 @@ const AboutCourse = ({ courseId }) => {
 
     const chapterFetch = async () => {
       try {
-        const response = await AxiosInstance.get("/tutor/chapterDetails", {
+        const response = await AxiosInstance.get("/tutor/chapterListing", {
           params: { courseId },
         });
 
@@ -100,7 +101,6 @@ const AboutCourse = ({ courseId }) => {
             ? [...prevChapterDetails, response.data.chapter]
             : [response.data.chapter];
         });
-        console.log("hihi", chapterDetails);
         toggleModal();
         return response.data;
       } else {
@@ -118,7 +118,7 @@ const AboutCourse = ({ courseId }) => {
 
   return (
     <>
-      {courseDetails && (
+      {courseDetails ? (
         <div className="p-3">
           <div className="flex justify-between">
             <span className="text-2xl font-bold">
@@ -127,12 +127,15 @@ const AboutCourse = ({ courseId }) => {
             </span>
             <div className="absolute top-32 right-3 ">
               {/* //////////////////// */}
-              {chapterDetails.map((chapter) => (
+              {chapterDetails?.map((chapter) => (
                 <div className="relative py-3" key={chapter._id}>
                   <button
                     id="dropdownDefaultButton"
                     className="text-gray-600 bg-gray-300 hover:text-gray-600 transition-colors duration-300 hover:bg-gray-200 focus:ring-2 focus:outline-none focus:ring-gray-400 font-semibold rounded-lg text-xl w-96 overflow-hidden px-2 py-2.5 text-center inline-flex items-center justify-center"
                     type="button"
+                    onClick={() =>
+                      navigate(`/tutor/chapterDetails/${chapter._id}`)
+                    }
                   >
                     {chapter.chapterName}
                   </button>
@@ -291,6 +294,10 @@ const AboutCourse = ({ courseId }) => {
             </div>
           )}
           <Toaster />
+        </div>
+      ) : (
+        <div className="flex text-center justify-center">
+          <h1 className="text-3xl text-gray-500 font-bold">Loading...</h1>
         </div>
       )}
     </>
