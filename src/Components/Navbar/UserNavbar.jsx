@@ -4,24 +4,25 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { userLogout } from "../../Redux/userSlice";
 import toast, { Toaster } from "react-hot-toast";
-import AxiosInstance from "../../Axios/AxiosInstance";
+import AxiosInstance from "../../Hooks/UseAxiosPrivate";
 import Logo from "../HelperComponents/Logo";
 // AxiosInstance.defaults.withCredentials = true;
 
 const UserNavbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const axios = AxiosInstance();
   const [toggle, setToggle] = useState(true);
 
   const updateToggle = () => {
     setToggle(!toggle);
   };
 
-  const state = useSelector((state) => state.user);
+  const { id, role } = useSelector((state) => state.user);
 
   const handleLogout = async () => {
     try {
-      const res = await AxiosInstance.post("/logout");
+      const res = await axios.get("/logout", { params: { id } });
       if (res.status === 200) {
         toast.success("Successfully logged out!");
         dispatch(userLogout());
@@ -64,7 +65,7 @@ const UserNavbar = () => {
           </ul>
         </div>
         <div className="hidden md:flex gap-4">
-          {!state.id ? (
+          {!id ? (
             <>
               <button
                 className="border-black border p-2 cursor-pointer hover:bg-black hover:text-white"
@@ -106,7 +107,7 @@ const UserNavbar = () => {
             <li className="p-3" onClick={() => navigate("/profile")}>
               PROFILE
             </li>
-            {!state.role === 2000 ? (
+            {!role === 2000 ? (
               <>
                 <li className="p-3" onClick={() => navigate("/login")}>
                   LOGIN

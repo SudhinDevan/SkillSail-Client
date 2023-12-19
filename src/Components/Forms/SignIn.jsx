@@ -1,4 +1,4 @@
-import AxiosInstance from "../../Axios/AxiosInstance";
+import Axios from "../../Axios/AxiosInstance";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -29,24 +29,25 @@ const SignIn = () => {
     }));
   };
 
+  let toastId;
+
   const sendRequest = async () => {
-    const res = await AxiosInstance.post("/login", {
-      email: inputs.email,
-      password: inputs.password,
-    }).catch(() => {
+    try {
+      const res = await Axios.post("/login", {
+        email: inputs.email,
+        password: inputs.password,
+      });
+      const data = await res.data;
+      return { ...data, status: res.status };
+    } catch (err) {
       toast.remove(toastId);
-      toastId = toast.error("Please wait till the Admin verifies your profile");
+      toastId = toast.error(err.response.data.message);
       setTimeout(() => {
         toast.remove(toastId);
         navigate("/");
       }, 3000);
-    });
-
-    const data = await res.data;
-    return { ...data, status: res.status };
+    }
   };
-
-  let toastId;
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -88,6 +89,7 @@ const SignIn = () => {
           );
           navigate("/tutor/dashboard");
         } else if (res.status === 401) {
+          console.log("sid", res);
           toast.remove(toastId);
           toast.error("Please wait till your profile is verified by the admin");
           setTimeout(() => {

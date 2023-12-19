@@ -27,14 +27,14 @@ const CurrentCourse = () => {
         const response = await axiosPrivate.get("/tutor/courseList", {
           params: { email },
         });
-        console.log("response: ", response.data);
+        console.log("response: ", response);
         setCourses(response.data.coursesList || []);
       } catch (error) {
         console.error("Error fetching course list:", error);
       }
     };
     fetchCourses();
-  }, [isModalVisible, axiosPrivate, email]);
+  }, [axiosPrivate, email]);
 
   const isValidFileUpload = (file) => {
     const validExtensions = ["png", "jpeg", "jpg"];
@@ -169,6 +169,7 @@ const CurrentCourse = () => {
             {/* ////////////////////////////////////////////// */}
           </div>
         </div>
+        {/* ////////////////////////Modal///////////////////////////////////// */}
         {isModalVisible && (
           <div
             aria-hidden="true"

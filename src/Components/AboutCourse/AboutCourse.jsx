@@ -2,7 +2,9 @@ import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import UseAxiosPrivate from "../../Hooks/UseAxiosPrivate";
 import toast, { Toaster } from "react-hot-toast";
+import { RiDeleteBin7Fill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const AboutCourse = ({ courseId }) => {
   const AxiosInstance = UseAxiosPrivate();
@@ -49,7 +51,9 @@ const AboutCourse = ({ courseId }) => {
     chapterFetch();
   }, [courseId, AxiosInstance]);
 
+  console.log("modal state: ", isModalVisible);
   const toggleModal = () => {
+    console.log("modal state: ", isModalVisible);
     setIsModalVisible((prev) => !prev);
   };
 
@@ -116,6 +120,52 @@ const AboutCourse = ({ courseId }) => {
     await newChapter();
   };
 
+  const deleteChapter = async (chapterId) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#fea663",
+      cancelButtonColor: "#004787",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await AxiosInstance.delete(
+            `/tutor/courseDetails/chapter/${chapterId}`
+          );
+          if (response.status === 200) {
+            setChapterDetails((prevChapterDetails) =>
+              prevChapterDetails.filter((chapter) => chapter._id !== chapterId)
+            );
+            Swal.fire({
+              title: "Deleted!",
+              text: "Your file has been deleted.",
+              icon: "success",
+            });
+          } else {
+            console.log(2);
+            // Handle other response statuses if needed
+            Swal.fire({
+              title: "Error",
+              text: "Unable to delete the chapter.",
+              icon: "error",
+            });
+          }
+        } catch (error) {
+          console.log("3");
+          console.error("Error deleting chapter:", error);
+          Swal.fire({
+            title: "Error",
+            text: "An error occurred while deleting the chapter.",
+            icon: "error",
+          });
+        }
+      }
+    });
+  };
+
   return (
     <>
       {courseDetails ? (
@@ -128,24 +178,32 @@ const AboutCourse = ({ courseId }) => {
             <div className="absolute top-32 right-3 ">
               {/* //////////////////// */}
               {chapterDetails?.map((chapter) => (
-                <div className="relative py-3" key={chapter._id}>
+                <div
+                  className="text-gray-600 bg-gray-300 hover:text-gray-600 transition-colors duration-300 hover:bg-gray-200 focus:ring-2 focus:outline-none focus:ring-gray-400 font-semibold rounded-lg text-xl w-96 overflow-hidden py-2.5 text-center flex p-3 m-3 px-3"
+                  key={chapter._id}
+                >
                   <button
                     id="dropdownDefaultButton"
-                    className="text-gray-600 bg-gray-300 hover:text-gray-600 transition-colors duration-300 hover:bg-gray-200 focus:ring-2 focus:outline-none focus:ring-gray-400 font-semibold rounded-lg text-xl w-96 overflow-hidden px-2 py-2.5 text-center inline-flex items-center justify-center"
                     type="button"
                     onClick={() =>
                       navigate(`/tutor/chapterDetails/${chapter._id}`)
                     }
                   >
-                    {chapter.chapterName}
+                    {chapter.index}.{chapter.chapterName}
+                    {` `}
                   </button>
+                  <span className="ml-auto pt-1 hover:cursor-pointer hover:-translate-y-1 transition-all duration-300">
+                    <RiDeleteBin7Fill
+                      className="opacity-90"
+                      onClick={() => deleteChapter(chapter._id)}
+                    />
+                  </span>
                 </div>
               ))}
               {/* ///////////////// */}
-              <div className="relative py-3">
+              <div className="text-green-700 bg-gray-300 hover:text-green-800 transition-colors duration-300 hover:bg-gray-200 focus:ring-2 focus:outline-none focus:ring-gray-400 font-semibold rounded-lg text-xl w-96 overflow-hidden py-2.5 text-center justify-center flex p-3 m-3 px-3 ">
                 <button
                   id="dropdownDefaultButton"
-                  className="text-green-700 bg-gray-300 hover:text-green-800 transition-colors duration-300 hover:bg-gray-200 focus:ring-2 focus:outline-none focus:ring-gray-400 font-semibold rounded-lg text-2xl w-96 overflow-hidden px-4 py-2.5 text-center inline-flex items-center justify-center"
                   type="button"
                   onClick={toggleModal}
                 >

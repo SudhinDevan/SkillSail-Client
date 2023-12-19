@@ -10,7 +10,7 @@ const DisplayCoursesUserSide = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axiosInstance.get("/courses");
+        const response = await axiosInstance.get("/user/courses");
         setCourses(response.data.courses);
       } catch (error) {
         console.error("Error fetching courses", error);

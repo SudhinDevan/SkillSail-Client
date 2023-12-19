@@ -3,11 +3,12 @@ import { MdMenu } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import Logo from "../HelperComponents/Logo";
 import { useState } from "react";
-import AxiosInstance from "../../Axios/AxiosInstance";
+import UseAxiosPrivate from "../../Hooks/UseAxiosPrivate";
 import toast, { Toaster } from "react-hot-toast";
 import { userLogout } from "../../Redux/userSlice";
 
 const TutorNavbar = () => {
+  const AxiosInstance = UseAxiosPrivate()
   const [toggle, setToggle] = useState(true);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -20,9 +21,9 @@ const TutorNavbar = () => {
 
   const handleLogout = async () => {
     try {
-      toast.success("Logged Out", { duration: 2000 });
       const res = await AxiosInstance.post("/admin/logout");
       if (res.status === 200) {
+        toast.success("Logged Out", { duration: 2000 });
         dispatch(userLogout());
         navigate("/");
       }

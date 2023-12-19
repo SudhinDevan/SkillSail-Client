@@ -6,7 +6,9 @@ const TeacherListing = () => {
   const [teachers, setTeachers] = useState([]);
 
   useEffect(() => {
-    AxiosInstance.get("/admin/teacherListing").then((res) => setTeachers(res.data));
+    AxiosInstance.get("/admin/teacherListing").then((res) =>
+      setTeachers(res.data)
+    );
   }, [teachers]);
 
   const accessChange = async (email, isAccess) => {

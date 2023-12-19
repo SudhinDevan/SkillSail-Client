@@ -1,20 +1,77 @@
 import { useSelector } from "react-redux";
-import { useState } from "react";
+import { FaMailBulk, FaPhone } from "react-icons/fa";
+import { useEffect, useState } from "react";
 import AxiosInstance from "../../Axios/AxiosInstance";
+import ProfileIcon from "../HelperComponents/ProfileIcon";
 import { useDispatch } from "react-redux";
 import { userLogin } from "../../Redux/userSlice";
 import toast, { Toaster } from "react-hot-toast";
+import { IoCameraReverse } from "react-icons/io5";
+
+const profilePic =
+  "https://akademi.dexignlab.com/react/demo/static/media/8.0ec0e6b47b83af64e0c9.jpg";
 
 const UserProfileForm = () => {
   const { name, email, phone } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [image, setImage] = useState(null);
+  const [isHovered, setIsHovered] = useState(false);
   const [inputs, setInputs] = useState({
     name: "",
     phone: "",
     email: email,
   });
-  // const [image, setImage] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await AxiosInstance.get("/user/profileDetails", {
+          params: { email },
+        });
+        setImage(response.data.user.profilePic.url);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchData();
+  }, [image, email]);
+
+  const handleMouse = () => {
+    setIsHovered((prev) => !prev);
+  };
+
+  const handleImage = (e) => {
+    ImageToBase(e.target.files[0]);
+  };
+
+  const ImageToBase = (file) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      changeImage(reader.result);
+    };
+    reader.onerror = (error) => {
+      toast.error("Error reading file: ", error.message);
+    };
+  };
+
+  const changeImage = async (file) => {
+    let toastId;
+    toastId = toast.loading("Loading...");
+    const response = await AxiosInstance.put("/user/editImage", {
+      file,
+      email,
+    });
+    if (response.status === 200) {
+      let imageUrl = response.data.user.profilePic.url;
+      setImage(imageUrl);
+      toast.remove(toastId);
+      toast.success("Display Picture updated successfully");
+    } else {
+      toast.error("Unexpected error Occured");
+    }
+  };
 
   const toggleModal = () => {
     setIsModalVisible((prev) => !prev);
@@ -28,7 +85,7 @@ const UserProfileForm = () => {
   };
 
   const sendRequest = async () => {
-    const res = await AxiosInstance.post("/editProfile", inputs).catch(
+    const res = await AxiosInstance.post("/user/editProfile", inputs).catch(
       (error) => console.log(error.message)
     );
 
@@ -45,7 +102,6 @@ const UserProfileForm = () => {
       e.preventDefault();
       sendRequest().then((res) => {
         if (res.status === 200) {
-          console.log(res);
           const { name, phone, email, _id, role } = res.updatedUser;
           dispatch(
             userLogin({
@@ -63,81 +119,121 @@ const UserProfileForm = () => {
     }
   };
 
-
   return (
-    <>
-      <body className="font-sans antialiased text-gray-900 leading-normal tracking-wider bg-cover">
-        <div className="max-w-4xl flex items-center h-auto lg:h-screen flex-wrap mx-auto my-32 lg:my-0">
-          <div
-            id="profile"
-            className="w-full lg:w-3/5 rounded-lg lg:rounded-l-lg lg:rounded-r-none shadow-2xl bg-white opacity-75 mx-6 lg:mx-0"
-          >
-            <div className="p-4 md:p-12 text-center lg:text-left">
-              <div
-                className="block lg:hidden rounded-full shadow-xl mx-auto -mt-16 h-48 w-48 bg-cover bg-center"
-                style={{
-                  backgroundImage:
-                    "url('https://source.unsplash.com/MP0IUfwrn0A')",
-                }}
-              >
-                <img
-                  className="bg-transparent w-10 pt-2 pr-2"
-                  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsTAAALEwEAmpwYAAADaElEQVR4nO2bTU8TQRyHG6M3v4DfwKMJR4lN3Ckvs0WkswsYFA+iF00IiVKNhYpVEY0KRCC8aFwiypsR5ODBRAzEg1Ex3AxIAJHEg8gBoZQ2/ZtprLal3Wy3LTtb55fMaV+fZ2ZnZ2d3LRYeHp54QXbZKojSgIDJsoBJAIkS7HwhWwiTJkuScbvduw4XyjYkSncFLL1AWBpHmAwhkTjz7I79qhvn5JzZg0TSaQzw9lJwpNwHAE6tZXhkrFuqqPquss8grdj8/JJ98WueJfjicuh59Bi0ZvDZKOQVlWraN23ZNiwf2NbsI1eq9zTBzOwc+P1+YD1K34Aeya+iBAiiNBhe6Gq4CWaJTnjax7RFC8BkObyQ1nxWw2MyaZXlvbEC/vb2Wdzs48PTRK6UvfDSRFx4MwnQC1956uxiQnizCNALX1NbByurqzcsakGMC0gFfsPrpbu4YloBSurw5hWgpAfenAIUvfDO+lh48wlQ0gtvLgFK+uHNI0BJAd7r3VTbNfsClMzBsy9AySw82wIUnfBO11XY9NFJIzCvgP7hkYzDdz3shYLiMvU5RmSQgNITpzNd86HpNbqdgImPOQGdD3qThPckBU8TuT1zAoLBILR29GQMnjkBHz9NQ2t7N8wvfo2S0Hy/UxX+Yt018Pm2dB2TGQE/Vn4CLjkWOsbR0pPweWY2SsL1pntph2dKgBJzu4uVQFtHuuGZEeD3B6AsTo9PJXyYmg4NZhpvt0Qtu1SfOjwzAsYn3ibd26cDnhkBNbV1hsAzIWBhcQlsdtkQeCYEtLR1aYJP1zXPlID19Q0oIsdVwasvuOD1m0kIBAKQiRgqYHTsZVxo0VEBd1o74MvcPGQ6hgpojhnhVVadg6HnY7C29gt2KoYKmJtfgOrzl8HtuQXv3k+FRnw7HcM7QaPDBYi8BQC/BETeBwDvBEV+FwB+G0wUxMcBEh8IIT4SlPhQGPFnAQmyLfxZQNTwLCCY7GNpraEsYS7KqCZg2Wyfy2sJffMU0QKWEg+EMOkPr+hqaIRsCZ2J+ieA9CUUYMOOQ5HXCv1rhNoz4+VAz5meO63IqMlYu5ybUACNgKUOrW9vzFdifpFJ+NscJu3ZCG+1WndbtAbZ5VyEyVOEyTfjfpzUX/6c85IgSk9shY6DmsF5eCz/VX4DU5He/Lw8sL8AAAAASUVORK5CYII="
-                />
+    <div className="w-screen h-screen+50 md:h-screen overflow-x-hidden">
+      <div className="w-full h-full bg-gray-300 py-5 px-10 flex flex-col md:flex-row gap-4">
+        <div className="w-full md:w-3/4 h-full flex flex-col gap-4">
+          <div className="h-1/2 flex flex-col relative">
+            <div className="bg-profile-card-color h-1/3 rounded-tl-md rounded-tr-md"></div>
+            <div className="bg-white h-2/3 rounded-bl-md rounded-br-md">
+              <div className="h-1/4 p-2 flex justify-end pr-5">
+                <button
+                  onClick={toggleModal}
+                  className="border-2 p-3 flex justify-center items-center font-semibold text-gray-500 hover:text-orange-400 rounded-md hover:bg-profile-card-color duration-500 hover:translate-x-1 transition-all border-gray-300"
+                >
+                  Edit Details
+                </button>
               </div>
-              <h1 className="text-3xl font-bold pt-8 lg:pt-0 p-3 border-b-2">
+              <div className="h-1/4 pl-5 text-2xl font-semibold flex items-center">
                 {name}
-              </h1>
-              <h4 className="font-bold pt-8 lg:pt-0 text-base py-3 mt-5">
-                Email: <span>{email}</span>
-              </h4>
-              <h4 className="font-bold text-base py-3">
-                Phone: <span>{phone}</span>
-              </h4>
-              <button
-                className="bg-white hover:bg-orange-200 hover:text-blue-900 font-semibold py-2 px-4 border border-gray-400 rounded shadow mt-3"
-                type="button"
-                onClick={toggleModal}
-              >
-                Edit Profile
-              </button>
-
-              <button className="bg-white p-4 hover:bg-orange-200 hover:text-blue-900 font-semibold py-2 border border-gray-400 rounded shadow mt-3 mx-20">
-                Change Password
-              </button>
+              </div>
+              <div className="h-2/4 flex flex-col md:flex-row pl-5">
+                <div className="w-1/2 h-full flex items-center">
+                  <ProfileIcon
+                    Icon={<FaMailBulk />}
+                    title="email"
+                    subtitle={email}
+                  />
+                </div>
+                <div className="w-1/2 h-full flex items-center">
+                  <ProfileIcon
+                    Icon={<FaPhone />}
+                    title="phone"
+                    subtitle={phone}
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              className="bg-white w-24 md:w-28 h-24 md:h-28 rounded-full absolute top-14 md:top-8 left-4 flex items-center justify-center"
+              onMouseEnter={handleMouse}
+              onMouseLeave={handleMouse}
+            >
+              <label htmlFor="fileInput" className="cursor-pointer">
+                <div
+                  style={{
+                    backgroundImage: `url(${image ? image : profilePic})`,
+                  }}
+                  className={`bg-black bg-cover bg-center w-20 md:w-24 h-20 md:h-24 flex transition-all duration-200 flex-col justify-center text-center rounded-full ${
+                    isHovered && "hover:opacity-70"
+                  }`}
+                >
+                  {isHovered && !inputs.image && (
+                    <div className="text-white text-center justify-center flex">
+                      <input
+                        type="file"
+                        id="fileInput"
+                        accept="image/*"
+                        className="hidden"
+                        name="image"
+                        onChange={(e) => handleImage(e)}
+                      />
+                      <label htmlFor="fileInput">
+                        <IoCameraReverse className="text-3xl cursor-pointer" />
+                      </label>
+                    </div>
+                  )}
+                </div>
+              </label>
             </div>
           </div>
-          <div className="w-full lg:w-2/5 h-2/3">
-            <div
-              className="hidden sm:block md:w-full h-full shadow-xl bg-cover bg-center rounded-md md:flex md:flex-col md:items-end"
-              style={{
-                backgroundImage:
-                  "url('https://source.unsplash.com/MP0IUfwrn0A')",
-              }}
-            >
-              <div>
-                <input
-                  type="file"
-                  accept="image/jpeg, image/png"
-                  // onChange={(e) => displayImageSet(e)}
-                  className="hidden"
-                  id="imageInput"
-                />
-                <label htmlFor="imageInput" className="cursor-pointer">
-                  <img
-                    className="w-10 pt-2 pr-2 hover:transform hover:-translate-y-1 hover:duration-300"
-                    src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsTAAALEwEAmpwYAAADaElEQVR4nO2bTU8TQRyHG6M3v4DfwKMJR4lN3Ckvs0WkswsYFA+iF00IiVKNhYpVEY0KRCC8aFwiypsR5ODBRAzEg1Ex3AxIAJHEg8gBoZQ2/ZtprLal3Wy3LTtb55fMaV+fZ2ZnZ2d3LRYeHp54QXbZKojSgIDJsoBJAIkS7HwhWwiTJkuScbvduw4XyjYkSncFLL1AWBpHmAwhkTjz7I79qhvn5JzZg0TSaQzw9lJwpNwHAE6tZXhkrFuqqPquss8grdj8/JJ98WueJfjicuh59Bi0ZvDZKOQVlWraN23ZNiwf2NbsI1eq9zTBzOwc+P1+YD1K34Aeya+iBAiiNBhe6Gq4CWaJTnjax7RFC8BkObyQ1nxWw2MyaZXlvbEC/vb2Wdzs48PTRK6UvfDSRFx4MwnQC1956uxiQnizCNALX1NbByurqzcsakGMC0gFfsPrpbu4YloBSurw5hWgpAfenAIUvfDO+lh48wlQ0gtvLgFK+uHNI0BJAd7r3VTbNfsClMzBsy9AySw82wIUnfBO11XY9NFJIzCvgP7hkYzDdz3shYLiMvU5RmSQgNITpzNd86HpNbqdgImPOQGdD3qThPckBU8TuT1zAoLBILR29GQMnjkBHz9NQ2t7N8wvfo2S0Hy/UxX+Yt018Pm2dB2TGQE/Vn4CLjkWOsbR0pPweWY2SsL1pntph2dKgBJzu4uVQFtHuuGZEeD3B6AsTo9PJXyYmg4NZhpvt0Qtu1SfOjwzAsYn3ibd26cDnhkBNbV1hsAzIWBhcQlsdtkQeCYEtLR1aYJP1zXPlID19Q0oIsdVwasvuOD1m0kIBAKQiRgqYHTsZVxo0VEBd1o74MvcPGQ6hgpojhnhVVadg6HnY7C29gt2KoYKmJtfgOrzl8HtuQXv3k+FRnw7HcM7QaPDBYi8BQC/BETeBwDvBEV+FwB+G0wUxMcBEh8IIT4SlPhQGPFnAQmyLfxZQNTwLCCY7GNpraEsYS7KqCZg2Wyfy2sJffMU0QKWEg+EMOkPr+hqaIRsCZ2J+ieA9CUUYMOOQ5HXCv1rhNoz4+VAz5meO63IqMlYu5ybUACNgKUOrW9vzFdifpFJ+NscJu3ZCG+1WndbtAbZ5VyEyVOEyTfjfpzUX/6c85IgSk9shY6DmsF5eCz/VX4DU5He/Lw8sL8AAAAASUVORK5CYII="
-                    alt="Upload Image"
-                  />
-                </label>
+          <div className="bg-white h-1/2 rounded-md">
+            <div className="h-2/3 flex flex-col justify-center gap-2 pl-5">
+              <div className="font-bold text-2xl">Purchased Courses:</div>
+              <div className="text-sm w-3/4">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+                enim ad minim veniam, quis nostrud exercitation ullamco laboris
+                nisi ut aliquip ex ea commodo consequat.
               </div>
             </div>
+          </div>
+        </div>
+        <div className="bg-grey-500 w-full md:w-1/4 h-1/2 flex flex-col gap-2">
+          <div className="bg-white rounded-md h-1/4 flex flex-col justify-center pl-5">
+            <div className="text-sm font-semibold capitalize">
+              Recent uploads
+            </div>
+            <div className="text-verySmall">Thursday, 10th April , 2022</div>
+          </div>
+          <div className="bg-white rounded-md h-2/4">
+            <div className="h-1/2 flex flex-col justify-center pl-5">
+              <div className="text-sm font-medium">Osint</div>
+              <div className="text-verySmall-1">Lessons: 14</div>
+            </div>
+            <div className="h-1/2 flex">
+              <div className="w-2/3 flex flex-col justify-center pl-5">
+                <div className="text-verySmall-1">July 20, 2023</div>
+                <div className="text-verySmall-1">Students : 3</div>
+              </div>
+              <div className="w-1/3 flex justify-center items-center">
+                <div
+                  style={{
+                    backgroundImage: `url(${image ? image : profilePic})`,
+                  }}
+                  className="w-12 h-12 bg-center bg-cover rounded-full"
+                ></div>
+              </div>
+            </div>
+          </div>
+          <div className="bg-profile-card-color bg-opacity-10 hover:bg-opacity-100 rounded-3xl h-1/6 flex justify-center items-center text-sm text-profile-color hover:text-white cursor-pointer">
+            View More
           </div>
         </div>
         {isModalVisible && (
           <div
             aria-hidden="true"
-            className="flex   fixed  z-50 justify-center items-center w-full md:inset-0 max-h-full backdrop-filter backdrop-blur-sm"
+            className="flex fixed z-50 justify-center items-center w-full md:inset-0 max-h-full backdrop-filter backdrop-blur-sm"
           >
             <div className="relative  w-full  max-w-md max-h-full">
               <div className="relative bg-white rounded-lg shadow">
@@ -220,53 +316,10 @@ const UserProfileForm = () => {
             </div>
           </div>
         )}
-      </body>
+      </div>
       <Toaster />
-    </>
+    </div>
   );
 };
 
 export default UserProfileForm;
-
-
-
-
-
-  // const displayImageSet = (e) => {
-  //   const file = e.target.files[0];
-  //   const reader = new FileReader();
-  //   reader.readAsDataURL(file);
-
-  //   reader.onloadend = () => {
-  //     // console.log('imageData');
-  //     const imageData = reader.result;
-  //     // console.log(imageData);
-  //     setImage(imageData);
-  //     // imageUploader();
-  //   };
-
-  //   // if (e.type === "loadend") {
-  //   //   const imageData = reader.result;
-  //   //   setImage(imageData);
-  //   //   imageUploader();
-  //   // }
-  //   console.log('sdfjdf',image);
-  //   // imageUploader();
-  // };
-
-  // useEffect(()=>{
-  //   imageUploader();
-  // },[image])
-
-  // const imageUploader = async () => {
-  //   console.log("image: ", image);
-  //   try {
-  //     const res = await AxiosInstance.post(
-  //       "/profile/displayimage",
-  //       { image }
-  //     );
-  //     console.log(res.data);
-  //   } catch (error) {
-  //     console.log(error.message);
-  //   }
-  // };

@@ -62,6 +62,8 @@ const SignUp = () => {
     }));
   };
 
+  console.log(inputs);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
@@ -69,6 +71,17 @@ const SignUp = () => {
     const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/; //condition: 1UC 1LC 1digit and strength 8
     const phonePattern = /^\d{10}$/;
 
+    if (
+      inputs.name === "" ||
+      inputs.email === "" ||
+      inputs.phone === "" ||
+      inputs.password === "" ||
+      inputs.confirmPassword === ""
+    ) {
+      toast.error("Please enter the required fields");
+      return;
+    }
+    
     if (inputs.name.trim() === "" || !namePattern.test(inputs.name)) {
       // showErrorToast("Enter a Valid Name");
       toast.error("Enter a valid name", {
