@@ -33,10 +33,17 @@ const SignIn = () => {
 
   const sendRequest = async () => {
     try {
-      const res = await Axios.post("/login", {
-        email: inputs.email,
-        password: inputs.password,
-      });
+      const res = await Axios.post(
+        "/login",
+        {
+          email: inputs.email,
+          password: inputs.password,
+        },
+        {
+          withCredentials: true,
+          credentials: "include",
+        }
+      );
       const data = await res.data;
       return { ...data, status: res.status };
     } catch (err) {
@@ -44,7 +51,7 @@ const SignIn = () => {
       toastId = toast.error(err.response.data.message);
       setTimeout(() => {
         toast.remove(toastId);
-        navigate("/");
+        navigate("/login");
       }, 3000);
     }
   };
@@ -63,7 +70,7 @@ const SignIn = () => {
         } else if (res.status === 200 && res.user.role === 2000) {
           toast.remove(toastId);
           const { id, name, email, phone, role } = res.user;
-          const token = res.token;
+          const token = res.accessToken;
           dispatch(
             userLogin({
               id,

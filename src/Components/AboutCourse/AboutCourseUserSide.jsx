@@ -1,12 +1,19 @@
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import UseAxiosPrivate from "../../Hooks/UseAxiosPrivate";
-import PaymentWithPaypal from "../Payment/PaymentModal";
+import { useSelector } from "react-redux";
+import toast, { Toaster } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+// import PaymentWithPaypal from "../Payment/PaymentModal";
 
 const AboutCourseUserSide = ({ courseId }) => {
   const [courses, setCourses] = useState(null);
   const [chapters, setChapters] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const navigate = useNavigate();
+
+  const { id } = useSelector((state) => state.user);
 
   const AxiosInstance = UseAxiosPrivate();
 
@@ -16,7 +23,6 @@ const AboutCourseUserSide = ({ courseId }) => {
         const res = await AxiosInstance.get("/user/courseDetails", {
           params: { courseId },
         });
-        console.log("course", res.data);
         setCourses(res.data.course);
         setChapters(res.data.chapter);
       } catch (err) {
@@ -29,6 +35,71 @@ const AboutCourseUserSide = ({ courseId }) => {
 
   const paymentModal = () => {
     setIsModalVisible((prev) => !prev);
+  };
+
+  const handlepayment = async () => {
+    try {
+      const { data } = await AxiosInstance.post("/user/payment", {
+        price: courses.price,
+      });
+      handleRazorPay(data.order);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleRazorPay = (order) => {
+    const options = {
+      key: "rzp_test_jwaRXOYLK0lRRh",
+      amount: order.amount,
+      currency: order.currency,
+      name: "SkillSail",
+      description: "Test Transaction",
+      order_id: order.id,
+      theme: {
+        color: "#004787", // Set your desired color
+      },
+      handler: async (response) => {
+        try {
+          const { data } = await AxiosInstance.post("/user/payment/verify", {
+            response,
+            userId: id,
+            courseId: courses._id,
+          });
+          if (data.err) {
+            toast.error(data.message);
+          } else {
+            paymentModal();
+            Swal.fire({
+              position: "center",
+              icon: "success",
+              title: "Successfully Purchased the Course",
+              showConfirmButton: false,
+              timer: 2500,
+            });
+            setTimeout(() => {
+              navigate("/myLearning");
+            }, 2500);
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          toast.error("An error occurred. Please try again later.", {
+            position: toast.POSITION.BOTTOM_CENTER,
+          });
+        } finally {
+          paymentModal();
+        }
+      },
+    };
+    var rzp1 = new window.Razorpay(options);
+    rzp1.open();
+    rzp1.on("payment.failed", (response) => {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: response.error.description,
+      });
+    });
   };
 
   return (
@@ -89,50 +160,60 @@ const AboutCourseUserSide = ({ courseId }) => {
               aria-hidden="true"
               className="flex fixed bg-gray-300 bg-opacity-20 z-50 justify-center items-center w-full md:inset-0 max-h-full backdrop-filter backdrop-blur-sm"
             >
-              <div className="relative w-full max-w-lg max-h-full">
+              <div className="relative  w-full  max-w-lg max-h-full">
                 <div className="relative bg-white rounded-lg shadow">
-                  {/* ------------------------------------------------------- */}
-                  <div className="flex flex-col p-4 md:p-5 border-b rounded-t">
-                    <h3 className="text-2xl font-bold text-gray-900">
-                      {courses.courseName}
+                  <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
+                    <h3 className="text-lg font-semibold text-gray-900">
+                      Buy this Course
                     </h3>
-                    <div className="flex items-center justify-between mt-2">
-                      <h3 className="text-xl font-bold text-gray-900">
-                        ₹ {courses.price}
-                      </h3>
 
-                      <button
-                        onClick={paymentModal}
-                        type="button"
-                        className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
-                        data-modal-toggle="crud-modal"
+                    <button
+                      onClick={paymentModal}
+                      type="button"
+                      className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
+                      data-modal-toggle="crud-modal"
+                    >
+                      <svg
+                        className="w-3 h-3"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 14 14"
                       >
-                        <svg
-                          className="w-3 h-3"
-                          aria-hidden="true"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 14 14"
-                        >
-                          <path
-                            stroke="currentColor"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
-                          />
-                        </svg>
-                        <span className="sr-only">Close modal</span>
-                      </button>
-                    </div>
+                        <path
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                        />
+                      </svg>
+                      <span className="sr-only">Close modal</span>
+                    </button>
                   </div>
-                  <div className="p-5">
-                    <PaymentWithPaypal />
+                  <div>
+                    <h1 className="text-2xl font-bold px-5 pt-5 text-gray-600">
+                      Course Name: {courses.courseName}
+                    </h1>
+                    <h1 className="text-2xl font-bold px-5 pt-3 pb-5 text-gray-600">
+                      Price:{` `}
+                      &#8377;{courses.price}/-
+                    </h1>
+                  </div>
+                  <div className="flex justify-center items-center pb-5">
+                    <button
+                      onClick={handlepayment}
+                      style={{ backgroundColor: "#004787" }}
+                      className="p-3 border text-white text-xl font-bold hover:-translate-y-3 transition-all duration-500 border-gray-400 rounded-md"
+                    >
+                      Buy Now
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
           )}
+          <Toaster />
         </div>
       )}
     </>

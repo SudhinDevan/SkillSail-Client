@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import AxiosInstance from "../../Axios/AxiosInstance";
+import UseAxiosPrivate from "../../Hooks/UseAxiosPrivate"
 import Swal from "sweetalert2";
 import toast, { Toaster } from "react-hot-toast";
 
 const TeacherApprovalList = () => {
+  const axiosPrivate = UseAxiosPrivate()
   const [teachers, setTeachers] = useState([]);
   const [teacherModals, setTeacherModals] = useState({});
 
@@ -15,7 +16,7 @@ const TeacherApprovalList = () => {
   };
 
   useEffect(() => {
-    AxiosInstance.get("/admin/teacherRequest").then((res) =>
+    axiosPrivate.get("/admin/teacherRequest").then((res) =>
       setTeachers(res.data)
     );
   }, [teachers]);
@@ -32,7 +33,7 @@ const TeacherApprovalList = () => {
         confirmButtonText: "Yes, approve it!",
       });
       if (result.isConfirmed) {
-        const res = await AxiosInstance.post("/admin/approveTeacher", {
+        const res = await axiosPrivate.post("/admin/approveTeacher", {
           email,
         });
         if (res.status === 200) {
@@ -67,7 +68,7 @@ const TeacherApprovalList = () => {
       confirmButtonText: `Yes, ${actionText} User!`,
     }).then((result) => {
       if (result.isConfirmed) {
-        AxiosInstance.put("/admin/teacherAccess", {
+        axiosPrivate.put("/admin/teacherAccess", {
           email,
           isAccess,
         })

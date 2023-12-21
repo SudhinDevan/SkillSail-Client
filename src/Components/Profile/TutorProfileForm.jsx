@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import { FaMailBulk, FaPhone } from "react-icons/fa";
 import { useEffect, useState } from "react";
-import AxiosInstance from "../../Axios/AxiosInstance";
+import UseAxiosPrivate from "../../Hooks/UseAxiosPrivate";
 import ProfileIcon from "../HelperComponents/ProfileIcon";
 import { useDispatch } from "react-redux";
 import { userLogin } from "../../Redux/userSlice";
@@ -12,6 +12,7 @@ const profilePic =
   "https://akademi.dexignlab.com/react/demo/static/media/8.0ec0e6b47b83af64e0c9.jpg";
 
 const UserProfileForm = () => {
+  const axiosPrivate = UseAxiosPrivate();
   const { name, email, phone } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -26,7 +27,7 @@ const UserProfileForm = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await AxiosInstance.get("/user/profileDetails", {
+        const response = await axiosPrivate.get("/user/profileDetails", {
           params: { email },
         });
         setImage(response.data.user.profilePic.url);
@@ -59,7 +60,7 @@ const UserProfileForm = () => {
   const changeImage = async (file) => {
     let toastId;
     toastId = toast.loading("Loading...");
-    const response = await AxiosInstance.put("/user/editImage", {
+    const response = await axiosPrivate.put("/user/editImage", {
       file,
       email,
     });
@@ -95,18 +96,19 @@ const UserProfileForm = () => {
       });
       return;
     }
-
-    if (inputs.phone.trim() === "" || !phonePattern.test(inputs.phone)) {
-      // showErrorToast("Enter a Valid Name");
-      toast.error("Enter a valid phone number", {
-        duration: 1500,
-      });
-      return;
+    if (inputs.phone) {
+      if (inputs.phone.trim() === "" || !phonePattern.test(inputs.phone)) {
+        // showErrorToast("Enter a Valid Name");
+        toast.error("Enter a valid phone number", {
+          duration: 1500,
+        });
+        return;
+      }
     }
 
-    const res = await AxiosInstance.post("/user/editProfile", inputs).catch(
-      (error) => console.log(error.message)
-    );
+    const res = await axiosPrivate
+      .post("/user/editProfile", inputs)
+      .catch((error) => console.log(error.message));
 
     const data = await res.data;
     return { ...data, status: res.status };

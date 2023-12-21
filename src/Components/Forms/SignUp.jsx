@@ -81,7 +81,7 @@ const SignUp = () => {
       toast.error("Please enter the required fields");
       return;
     }
-    
+
     if (inputs.name.trim() === "" || !namePattern.test(inputs.name)) {
       // showErrorToast("Enter a Valid Name");
       toast.error("Enter a valid name", {

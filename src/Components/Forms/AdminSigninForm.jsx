@@ -24,10 +24,17 @@ const SignIn = () => {
     let toastId;
     try {
       // toastId = toast.loading("validating...");
-      const res = await AxiosInstance.post("/admin/login", {
-        email: inputs.email,
-        password: inputs.password,
-      });
+      const res = await AxiosInstance.post(
+        "/admin/login",
+        {
+          email: inputs.email,
+          password: inputs.password,
+        },
+        {
+          withCredentials: true,
+          credentials: "include",
+        }
+      );
       const data = res.data;
       return data;
     } catch (err) {

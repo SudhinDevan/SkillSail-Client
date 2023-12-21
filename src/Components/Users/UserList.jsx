@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
-import AxiosInstance from "../../Axios/AxiosInstance";
+import UseAxiosPrivate from "../../Hooks/UseAxiosPrivate";
 import Swal from "sweetalert2";
 
 const UserList = () => {
+  const axiosPrivate = UseAxiosPrivate();
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    AxiosInstance.get("/admin/userlist").then((res) => setUsers(res.data));
+    axiosPrivate.get("/admin/userlist").then((res) => setUsers(res.data));
   }, [setUsers, users]);
 
   const accessChange = async (email, isAccess) => {
@@ -22,10 +23,11 @@ const UserList = () => {
       confirmButtonText: `Yes, ${actionText} User!`,
     }).then((result) => {
       if (result.isConfirmed) {
-        AxiosInstance.put("/admin/userAccess", {
-          email,
-          isAccess,
-        })
+        axiosPrivate
+          .put("/admin/userAccess", {
+            email,
+            isAccess,
+          })
           .then((response) => {
             Swal.fire({
               title: `${onConfirm}`,

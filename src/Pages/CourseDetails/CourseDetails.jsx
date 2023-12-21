@@ -6,11 +6,11 @@ import { useParams } from "react-router-dom";
 const CourseDetails = () => {
   const { courseId } = useParams();
   return (
-    <>
+    <div>
       <TutorNavbar />
       <AboutCourse courseId={courseId} />
       <Footer />
-    </>
+    </div>
   );
 };
 

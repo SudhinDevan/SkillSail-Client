@@ -8,7 +8,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { userLogout } from "../../Redux/userSlice";
 
 const TutorNavbar = () => {
-  const AxiosInstance = UseAxiosPrivate()
+  const AxiosInstance = UseAxiosPrivate();
   const [toggle, setToggle] = useState(true);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -58,8 +58,19 @@ const TutorNavbar = () => {
                   MY COURSES
                 </span>
                 <li>COURSES</li>
+                <span
+                  className="cursor-pointer hover:text-orange-400 transition-colors duration-200"
+                  onClick={() => navigate("/tutor/students")}
+                >
+                  STUDENTS
+                </span>
                 <li>CHATS</li>
-                <li>BLOGS</li>
+                <span
+                  className="cursor-pointer hover:text-orange-400 transition-colors duration-200"
+                  onClick={() => navigate("/tutor/blog")}
+                >
+                  BLOGS
+                </span>
                 <span
                   className="cursor-pointer hover:text-orange-400 transition-colors duration-200"
                   onClick={() => navigate("/tutor/profile")}

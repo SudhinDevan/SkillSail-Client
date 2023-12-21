@@ -8,6 +8,7 @@ import UserProfile from "../Pages/Profile/UserProfile";
 import ProtectedUserRoutes from "../Utils/ProtectedUserRoutes";
 import DisplayCourses from "../Pages/DisplayCourses/DisplayCourses";
 import DisplayCourseDetails from "../Pages/CourseDetails/DisplayCourseDetails";
+import MyLearning from "../Pages/MyLearning/MyLearning";
 
 const AuthRoutes = () => {
   return (
@@ -59,6 +60,14 @@ const AuthRoutes = () => {
           element={
             <ProtectedUserRoutes>
               <DisplayCourseDetails />
+            </ProtectedUserRoutes>
+          }
+        />
+        <Route
+          path="/myLearning"
+          element={
+            <ProtectedUserRoutes>
+              <MyLearning />
             </ProtectedUserRoutes>
           }
         />

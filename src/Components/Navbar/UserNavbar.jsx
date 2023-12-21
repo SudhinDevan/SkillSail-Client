@@ -1,17 +1,19 @@
 import { useState } from "react";
 import { MdMenu } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { userLogout } from "../../Redux/userSlice";
+import { useSelector } from "react-redux";
+// import { userLogout } from "../../Redux/userSlice";
 import toast, { Toaster } from "react-hot-toast";
-import AxiosInstance from "../../Hooks/UseAxiosPrivate";
+// import AxiosInstance from "../../Hooks/UseAxiosPrivate";
 import Logo from "../HelperComponents/Logo";
+import useLogout from "../../Hooks/UseLogout";
 // AxiosInstance.defaults.withCredentials = true;
 
 const UserNavbar = () => {
-  const dispatch = useDispatch();
+  const logout = useLogout();
+  // const dispatch = useDispatch();
   const navigate = useNavigate();
-  const axios = AxiosInstance();
+  // const axios = AxiosInstance();
   const [toggle, setToggle] = useState(true);
 
   const updateToggle = () => {
@@ -22,12 +24,14 @@ const UserNavbar = () => {
 
   const handleLogout = async () => {
     try {
-      const res = await axios.get("/logout", { params: { id } });
-      if (res.status === 200) {
-        toast.success("Successfully logged out!");
-        dispatch(userLogout());
-        navigate("/");
-      }
+      logout();
+
+      // const res = await axios.get("/logout");
+      // if (res.status === 200) {
+      //   toast.success("Successfully logged out!");
+      //   dispatch(userLogout());
+      //   navigate("/");
+      // }
     } catch (error) {
       // Handle errors from the request (optional)
       toast.error(error);
@@ -54,7 +58,12 @@ const UserNavbar = () => {
             >
               ALL COURSES
             </span>
-            <li>MY LEARNING</li>
+            <span
+              onClick={() => navigate("/myLearning")}
+              className="hover:text-teal-500 cursor-pointer transition duration-300"
+            >
+              MY LEARNING
+            </span>
             <li>BLOG</li>
             <li
               className="hover:text-teal-500 cursor-pointer transition duration-300"

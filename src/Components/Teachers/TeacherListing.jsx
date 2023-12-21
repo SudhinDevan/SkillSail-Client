@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
-import AxiosInstance from "../../Axios/AxiosInstance";
+import UseAxiosPrivate from "../../Hooks/UseAxiosPrivate";
 import Swal from "sweetalert2";
 
 const TeacherListing = () => {
+  const axiosPrivate = UseAxiosPrivate();
   const [teachers, setTeachers] = useState([]);
 
   useEffect(() => {
-    AxiosInstance.get("/admin/teacherListing").then((res) =>
-      setTeachers(res.data)
-    );
+    axiosPrivate
+      .get("/admin/teacherListing")
+      .then((res) => setTeachers(res.data));
   }, [teachers]);
 
   const accessChange = async (email, isAccess) => {
@@ -25,10 +26,11 @@ const TeacherListing = () => {
       confirmButtonText: `Yes, ${actionText} User!`,
     }).then((result) => {
       if (result.isConfirmed) {
-        AxiosInstance.put("/admin/teacherAccess", {
-          email,
-          isAccess,
-        })
+        axiosPrivate
+          .put("/admin/teacherAccess", {
+            email,
+            isAccess,
+          })
           .then((response) => {
             Swal.fire({
               title: `${onConfirm}`,

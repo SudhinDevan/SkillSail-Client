@@ -3,7 +3,7 @@ import UserNavbar from "../../Components/Navbar/UserNavbar";
 import { useLocation, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import { useState } from "react";
-import AxiosInstance from "../../Hooks/UseAxiosPrivate";
+import AxiosInstance from "../../Axios/AxiosInstance";
 import { useDispatch } from "react-redux";
 import { userLogin } from "../../Redux/userSlice";
 
