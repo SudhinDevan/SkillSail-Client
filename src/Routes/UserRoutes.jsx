@@ -8,7 +8,10 @@ import UserProfile from "../Pages/Profile/UserProfile";
 import ProtectedUserRoutes from "../Utils/ProtectedUserRoutes";
 import DisplayCourses from "../Pages/DisplayCourses/DisplayCourses";
 import DisplayCourseDetails from "../Pages/CourseDetails/DisplayCourseDetails";
+import ChapterDetailsUserSide from "../Pages/Chapter/chapterDetailsUserSide";
 import MyLearning from "../Pages/MyLearning/MyLearning";
+import ForgotPassword from "../Pages/Otp/ForgotPassword";
+import ChangePassword from "../Pages/Profile/ChangePassword";
 
 const AuthRoutes = () => {
   return (
@@ -36,6 +39,22 @@ const AuthRoutes = () => {
           element={
             <ProtectedAuthRoutes>
               <OtpVerify />
+            </ProtectedAuthRoutes>
+          }
+        />
+        <Route
+          path="/forgotPassword"
+          element={
+            <ProtectedAuthRoutes>
+              <ForgotPassword />
+            </ProtectedAuthRoutes>
+          }
+        />
+        <Route
+          path="/changePassword"
+          element={
+            <ProtectedAuthRoutes>
+              <ChangePassword />
             </ProtectedAuthRoutes>
           }
         />
@@ -68,6 +87,14 @@ const AuthRoutes = () => {
           element={
             <ProtectedUserRoutes>
               <MyLearning />
+            </ProtectedUserRoutes>
+          }
+        />
+        <Route
+          path="/chapterDetails/:chapterId"
+          element={
+            <ProtectedUserRoutes>
+              <ChapterDetailsUserSide />
             </ProtectedUserRoutes>
           }
         />

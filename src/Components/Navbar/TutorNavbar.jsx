@@ -1,17 +1,18 @@
 import { useNavigate } from "react-router-dom";
 import { MdMenu } from "react-icons/md";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import Logo from "../HelperComponents/Logo";
 import { useState } from "react";
-import UseAxiosPrivate from "../../Hooks/UseAxiosPrivate";
+// import UseAxiosPrivate from "../../Hooks/UseAxiosPrivate";
 import toast, { Toaster } from "react-hot-toast";
-import { userLogout } from "../../Redux/userSlice";
+// import { userLogout } from "../../Redux/userSlice";
+import useLogout from "../../Hooks/UseLogout";
 
 const TutorNavbar = () => {
-  const AxiosInstance = UseAxiosPrivate();
+  const logout = useLogout();
+  // const AxiosInstance = UseAxiosPrivate();
   const [toggle, setToggle] = useState(true);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const state = useSelector((state) => state.user);
 
@@ -21,12 +22,11 @@ const TutorNavbar = () => {
 
   const handleLogout = async () => {
     try {
-      const res = await AxiosInstance.post("/admin/logout");
-      if (res.status === 200) {
-        toast.success("Logged Out", { duration: 2000 });
-        dispatch(userLogout());
-        navigate("/");
-      }
+      let toastId = toast.loading("Loggin Out");
+      setTimeout(() => {
+        toast.remove(toastId);
+        logout();
+      }, 1000);
     } catch (error) {
       console.error("Logout error:", error);
     }
@@ -57,7 +57,12 @@ const TutorNavbar = () => {
                 >
                   MY COURSES
                 </span>
-                <li>COURSES</li>
+                <span
+                  className="cursor-pointer hover:text-orange-400 transition-colors duration-200"
+                  onClick={() => navigate("/tutor/publicCourses")}
+                >
+                  COURSES
+                </span>
                 <span
                   className="cursor-pointer hover:text-orange-400 transition-colors duration-200"
                   onClick={() => navigate("/tutor/students")}

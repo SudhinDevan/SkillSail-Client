@@ -5,6 +5,7 @@ import RunningCourse from "../Pages/Course/RunningCourse";
 import CourseDetails from "../Pages/CourseDetails/CourseDetails";
 import ChapterDetails from "../Pages/Chapter/ChapterDetails";
 import StudentListing from "../Pages/Listing/StudentListing";
+import PublicCourses from "../Pages/Course/PublicCourse";
 import Blog from "../Pages/Blog/Blog";
 
 const TutorRoutes = () => {
@@ -14,6 +15,7 @@ const TutorRoutes = () => {
         <Route path="/tutor/dashboard" element={<TutorDashboard />} />
         <Route path="/tutor/profile" element={<TutorProfile />} />
         <Route path="/tutor/runningCourse" element={<RunningCourse />} />
+        <Route path="/tutor/publicCourses" element={<PublicCourses />} />
         <Route
           path="/tutor/courseDetails/:courseId"
           element={<CourseDetails />}

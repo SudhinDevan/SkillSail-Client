@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import UseAxiosPrivate from "../../Hooks/UseAxiosPrivate";
+import SyncLoader from "react-spinners/SyncLoader";
 
 const ChapterDetailsComp = ({ chapterId }) => {
   const AxiosInstance = UseAxiosPrivate();
@@ -41,8 +42,13 @@ const ChapterDetailsComp = ({ chapterId }) => {
           </div>
         </div>
       ) : (
-        <div className="flex text-center justify-center">
-          <h1 className="text-3xl text-gray-500 font-bold">Loading...</h1>
+        <div className="flex items-center justify-center h-screen">
+          <SyncLoader
+            color="#004787" // Dark blue color
+            size={20}
+            aria-label="Loading Spinner"
+            data-testid="loader"
+          />
         </div>
       )}
     </>
