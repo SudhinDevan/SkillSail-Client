@@ -7,8 +7,10 @@ import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 // import { userLogout } from "../../Redux/userSlice";
 import useLogout from "../../Hooks/UseLogout";
+import { useLocation } from "react-router-dom";
 
 const TutorNavbar = () => {
+  const location = useLocation();
   const logout = useLogout();
   // const AxiosInstance = UseAxiosPrivate();
   const [toggle, setToggle] = useState(true);
@@ -47,37 +49,59 @@ const TutorNavbar = () => {
               <ul className="flex gap-20 font-semibold">
                 <span
                   onClick={() => navigate("/tutor/dashboard")}
-                  className="cursor-pointer hover:text-orange-400 transition-colors duration-200"
+                  className={`cursor-pointer hover:text-orange-400 transition-all duration-300 ${
+                    location.pathname === "/tutor/dashboard"
+                      ? "text-orange-400"
+                      : ""
+                  }`}
                 >
                   HOME
                 </span>
                 <span
-                  className="cursor-pointer hover:text-orange-400 transition-colors duration-200"
+                  className={`cursor-pointer hover:text-orange-400 transition-all duration-300 ${
+                    location.pathname === "/tutor/runningCourse"
+                      ? "text-orange-400"
+                      : ""
+                  }`}
                   onClick={() => navigate("/tutor/runningCourse")}
                 >
                   MY COURSES
                 </span>
                 <span
-                  className="cursor-pointer hover:text-orange-400 transition-colors duration-200"
+                  className={`cursor-pointer hover:text-orange-400 transition-all duration-300 ${
+                    location.pathname === "/tutor/publicCourses"
+                      ? "text-orange-400"
+                      : ""
+                  }`}
                   onClick={() => navigate("/tutor/publicCourses")}
                 >
                   COURSES
                 </span>
                 <span
-                  className="cursor-pointer hover:text-orange-400 transition-colors duration-200"
+                  className={`cursor-pointer hover:text-orange-400 transition-all duration-300 ${
+                    location.pathname === "/tutor/students"
+                      ? "text-orange-400"
+                      : ""
+                  }`}
                   onClick={() => navigate("/tutor/students")}
                 >
                   STUDENTS
                 </span>
                 <li>CHATS</li>
                 <span
-                  className="cursor-pointer hover:text-orange-400 transition-colors duration-200"
+                  className={`cursor-pointer hover:text-orange-400 transition-all duration-300 ${
+                    location.pathname === "/tutor/blog" ? "text-orange-400" : ""
+                  }`}
                   onClick={() => navigate("/tutor/blog")}
                 >
                   BLOGS
                 </span>
                 <span
-                  className="cursor-pointer hover:text-orange-400 transition-colors duration-200"
+                  className={`cursor-pointer hover:text-orange-400 transition-all duration-300 ${
+                    location.pathname === "/tutor/profile"
+                      ? "text-orange-400"
+                      : ""
+                  }`}
                   onClick={() => navigate("/tutor/profile")}
                 >
                   PROFILE

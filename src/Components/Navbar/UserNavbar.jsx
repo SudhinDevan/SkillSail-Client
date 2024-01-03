@@ -8,8 +8,10 @@ import toast, { Toaster } from "react-hot-toast";
 import Logo from "../HelperComponents/Logo";
 import useLogout from "../../Hooks/UseLogout";
 // AxiosInstance.defaults.withCredentials = true;
+import { useLocation } from "react-router-dom";
 
 const UserNavbar = () => {
+  const location = useLocation();
   const logout = useLogout();
   // const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -47,26 +49,34 @@ const UserNavbar = () => {
         <div className="hidden md:flex justify-content-between">
           <ul className="flex gap-20 font-semibold">
             <span
-              className="hover:text-teal-500 cursor-pointer transition duration-300"
+              className={`cursor-pointer hover:text-orange-400 transition-all duration-300 ${
+                location.pathname === "/" ? "text-orange-400" : ""
+              }`}
               onClick={() => navigate("/")}
             >
               HOME
             </span>
             <span
               onClick={() => navigate("/courses")}
-              className="hover:text-teal-500 cursor-pointer transition duration-300"
+              className={`cursor-pointer hover:text-orange-400 transition-all duration-300 ${
+                location.pathname === "/courses" ? "text-orange-400" : ""
+              }`}
             >
               ALL COURSES
             </span>
             <span
               onClick={() => navigate("/myLearning")}
-              className="hover:text-teal-500 cursor-pointer transition duration-300"
+              className={`cursor-pointer hover:text-orange-400 transition-all duration-300 ${
+                location.pathname === "/myLearning" ? "text-orange-400" : ""
+              }`}
             >
               MY LEARNING
             </span>
             <li>BLOG</li>
             <li
-              className="hover:text-teal-500 cursor-pointer transition duration-300"
+              className={`cursor-pointer hover:text-orange-400 transition-all duration-300 ${
+                location.pathname === "/profile" ? "text-orange-400" : ""
+              }`}
               onClick={() => navigate("/profile")}
             >
               PROFILE

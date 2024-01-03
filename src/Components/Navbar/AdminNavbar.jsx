@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { MdMenu } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import Logo from "../HelperComponents/Logo";
@@ -9,6 +9,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { userLogout } from "../../Redux/userSlice";
 
 const AdminNavbar = () => {
+  const location = useLocation();
   const axiosPrivate = UseAxiosPrivate();
   const [toggle, setToggle] = useState(true);
   const navigate = useNavigate();
@@ -47,25 +48,55 @@ const AdminNavbar = () => {
             <div className="hidden md:flex justify-content-between">
               <ul className="flex gap-20 font-semibold">
                 <span
-                  className="cursor-pointer hover:text-orange-400"
+                  className={`cursor-pointer hover:text-orange-400 transition-all duration-300 ${
+                    location.pathname === "/admin/users"
+                      ? "text-orange-400"
+                      : ""
+                  }`}
                   onClick={() => navigate("/admin/users")}
                 >
                   STUDENTS
                 </span>
                 <span
                   onClick={() => navigate("/admin/teachers")}
-                  className="cursor-pointer hover:text-orange-400"
+                  className={`cursor-pointer hover:text-orange-400 transition-all duration-300 ${
+                    location.pathname === "/admin/teachers"
+                      ? "text-orange-400"
+                      : ""
+                  }`}
                 >
                   TEACHERS
                 </span>
                 <span
-                  className="cursor-pointer hover:text-orange-400"
+                  className={`cursor-pointer hover:text-orange-400 transition-all duration-300 ${
+                    location.pathname === "/admin/teacherRequest"
+                      ? "text-orange-400"
+                      : ""
+                  }`}
                   onClick={() => navigate("/admin/teacherRequest")}
                 >
                   TEACHER REQUEST
                 </span>
-                <li>ALL COURSES</li>
-                <li>TRANSACTIONS</li>
+                <span
+                  className={`cursor-pointer hover:text-orange-400 transition-all duration-300 ${
+                    location.pathname === "/admin/courses"
+                      ? "text-orange-400"
+                      : ""
+                  }`}
+                  onClick={() => navigate("/admin/courses")}
+                >
+                  COURSES
+                </span>
+                <span
+                  className={`cursor-pointer hover:text-orange-400 transition-all duration-300 ${
+                    location.pathname === "/admin/transactions"
+                      ? "text-orange-400"
+                      : ""
+                  }`}
+                  onClick={() => navigate("/admin/transactions")}
+                >
+                  TRANSACTIONS
+                </span>
               </ul>
             </div>
             <div className="hidden md:flex gap-4">

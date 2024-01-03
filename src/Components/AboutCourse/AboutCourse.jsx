@@ -226,12 +226,13 @@ const AboutCourse = ({ courseId }) => {
   const editCourseDetails = async (e) => {
     e.preventDefault();
     try {
-      console.log("sid", isChecked);
+      let toastId = toast.loading("Loading...");
       const response = await AxiosInstance.put("/tutor/courseDetails/edit", {
         changes,
         image: finalImage,
         isChecked,
       });
+      toast.remove(toastId);
       setCourseDetails(response.data.course);
       editCourseModal();
       Swal.fire({
@@ -273,12 +274,14 @@ const AboutCourse = ({ courseId }) => {
                     {chapter.chapterName}
                     {` `}
                   </button>
-                  <span className="ml-auto pt-1 hover:cursor-pointer hover:-translate-y-1 transition-all duration-300">
-                    <RiDeleteBin7Fill
-                      className="opacity-90"
-                      onClick={() => deleteChapter(chapter._id)}
-                    />
-                  </span>
+                  {!courseDetails.isCompleted && (
+                    <span className="ml-auto pt-1 hover:cursor-pointer hover:-translate-y-1 transition-all duration-300">
+                      <RiDeleteBin7Fill
+                        className="opacity-90"
+                        onClick={() => deleteChapter(chapter._id)}
+                      />
+                    </span>
+                  )}
                 </div>
               ))}
               {/* ///////////////// */}

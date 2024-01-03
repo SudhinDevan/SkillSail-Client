@@ -27,13 +27,12 @@ const PublicCourseTutor = () => {
   return (
     <>
       {courses ? (
-        <div className="p-6">
-          <span className="text-3xl font-bold">Classes: </span>
-          <div className="container mx-auto p-3 border-gray-200 overflow-x-auto">
-            <div className="flex flex-wrap">
-              {/* ////////////////////// */}
-              {courses &&
-                courses?.map((course) => (
+        courses.length > 0 ? (
+          <div className="p-6">
+            <span className="text-3xl font-bold">Classes: </span>
+            <div className="container mx-auto p-3 border-gray-200 overflow-x-auto">
+              <div className="flex flex-wrap">
+                {courses.map((course) => (
                   <div
                     key={course._id}
                     onClick={() =>
@@ -51,9 +50,18 @@ const PublicCourseTutor = () => {
                     </h1>
                   </div>
                 ))}
+              </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <div className="p-3">
+            <div className="p-4 h-24 border-2 mr-10 mt-4 mb-3 w-full rounded shadow-md cursor-pointer flex justify-center bg-white hover:bg-gray-100">
+              <h1 className="text-xl font-bold text-gray-700 p-2">
+                No Public Courses available.
+              </h1>
+            </div>
+          </div>
+        )
       ) : (
         <div className="flex items-center justify-center h-screen">
           <SyncLoader

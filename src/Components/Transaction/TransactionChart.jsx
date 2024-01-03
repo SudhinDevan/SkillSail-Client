@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import UseAxiosPrivate from "../../Hooks/UseAxiosPrivate";
+import { SyncLoader } from "react-spinners";
 import Swal from "sweetalert2";
-import SyncLoader from "react-spinners/SyncLoader";
 import Pagination from "../Utilities/Pagination";
 
-const TeacherListing = () => {
+const TransactionChart = () => {
   const axiosPrivate = UseAxiosPrivate();
-  const [teachers, setTeachers] = useState();
+  const [transactions, setTransactions] = useState(null);
   const [search, setSearch] = useState("");
-  const [filteredTutor, setFilteredTutor] = useState(null);
+  const [filterTransactionDatas, setFilterTransactionDatas] = useState(null);
 
   useEffect(() => {
     fetchData();
@@ -16,72 +16,71 @@ const TeacherListing = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axiosPrivate.get("/admin/teacherListing");
-      setTeachers(response.data);
-      setFilteredTutor(response.data);
+      const res = await axiosPrivate.get("/admin/transactions");
+      console.log(res.data.statement);
+      setTransactions(res.data.statement);
+      setFilterTransactionDatas(res.data.statement);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const accessChange = async (email, isAccess) => {
-    const actionText = isAccess ? "Block" : "Unblock";
-    const onConfirm = isAccess ? "Blocked" : "Unblocked";
-
-    Swal.fire({
-      title: "Are you sure",
-      text: `You want to ${actionText} this user!`,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#fea663",
-      cancelButtonColor: "#d33",
-      confirmButtonText: `Yes, ${actionText} User!`,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        axiosPrivate
-          .put("/admin/teacherAccess", {
-            email,
-            isAccess,
-          })
-          .then((response) => {
-            Swal.fire({
-              title: `${onConfirm}`,
-              text: `The user is ${onConfirm}.`,
-              icon: "success",
-            });
-
-            setTeachers((preTeachers) => {
-              return preTeachers.map((teacher) =>
-                teacher.email === response.data.email
-                  ? { ...teacher, isAccess: response.data.isAccess }
-                  : teacher
-              );
-            });
-          })
-          .catch((error) => {
-            // Handle error if the axios request fails
-            console.error("Error updating teacher access:", error);
-          });
-      }
-    });
+  const formatDate = (dateString) => {
+    const options = { day: "2-digit", month: "2-digit", year: "numeric" };
+    return new Date(dateString).toLocaleDateString("en-GB", options);
   };
 
-  const filterTutorFunction = (val) => {
+  const filterPaymentFunction = (val) => {
     setSearch(val);
-    const filteredTutor = teachers?.filter((item) => {
+    const filteredTransaction = transactions?.filter((item) => {
       return val.toLowerCase() === ""
         ? item
-        : item.email.toLowerCase().includes(val);
+        : item.transactionId.razorpay_payment_id.toLowerCase().includes(val);
     });
 
-    setFilteredTutor(filteredTutor);
+    setFilterTransactionDatas(filteredTransaction);
+  };
+
+  const paymentChange = async (id) => {
+    try {
+      const result = await Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "PAY",
+      });
+
+      if (result.isConfirmed) {
+        const res = await axiosPrivate.post("/admin/payTutor", { id });
+        setFilterTransactionDatas((prevData) =>
+          prevData.map((data) =>
+            data._id === res.data.payment._id
+              ? { ...data, paymentToTutor: res.data.payment.paymentToTutor }
+              : data
+          )
+        );
+        Swal.fire({
+          title: "Paid!",
+          text: "The payment has been marked as paid.",
+          icon: "success",
+        });
+      }
+    } catch (error) {
+      console.error("Error updating payment status:", error);
+    }
   };
 
   const [currentPage, setCurrentPage] = useState(1);
-  const postPerPage = 2;
+  const postPerPage = 5;
   const lastPostIndex = currentPage * postPerPage;
   const firstPostIndex = lastPostIndex - postPerPage;
-  const currentPosts = filteredTutor?.slice(firstPostIndex, lastPostIndex);
+  const currentPosts = filterTransactionDatas?.slice(
+    firstPostIndex,
+    lastPostIndex
+  );
 
   return (
     <>
@@ -110,9 +109,9 @@ const TeacherListing = () => {
               type="text"
               id="search"
               onChange={(e) => {
-                filterTutorFunction(e.target.value);
+                filterPaymentFunction(e.target.value);
               }}
-              placeholder="Search Tutor Email..."
+              placeholder="Search TransactionId..."
             />
           </div>
         </div>
@@ -126,48 +125,63 @@ const TeacherListing = () => {
                     Index
                   </th>
                   <th className="px-6 py-3 bg-gray-50 text-xs text-center leading-4 font-medium text-gray-500 uppercase tracking-wider">
-                    Name
+                    User Email
                   </th>
                   <th className="px-6 py-3 bg-gray-50 text-xs text-center leading-4 font-medium text-gray-500 uppercase tracking-wider">
-                    Email
+                    Course Name
                   </th>
                   <th className="px-6 py-3 bg-gray-50 text-xs text-center leading-4 font-medium text-gray-500 uppercase tracking-wider">
-                    Status
+                    Tutor Email
                   </th>
                   <th className="px-6 py-3 bg-gray-50 text-xs text-center leading-4 font-medium text-gray-500 uppercase tracking-wider">
-                    Action
+                    Amount
+                  </th>
+                  <th className="px-6 py-3 bg-gray-50 text-xs text-center leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                    Transaction Id
+                  </th>
+                  <th className="px-6 py-3 bg-gray-50 text-xs text-center leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                    Transaction Date
+                  </th>
+                  <th className="px-6 py-3 bg-gray-50 text-xs text-center leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                    Payment Status
                   </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {currentPosts.map((teacher, index) => (
-                  <tr key={teacher._id}>
+                {currentPosts.map((transaction, index) => (
+                  <tr key={transaction._id}>
                     <td className="px-6 py-4 text-center whitespace-no-wrap">
-                      {index + 1}
+                      {index + 1 + currentPage * postPerPage - postPerPage}
                     </td>
                     <td className="px-6 py-4 text-center whitespace-no-wrap">
-                      {teacher.name}
+                      {transaction?.user?.email}
                     </td>
                     <td className="px-6 py-4 text-center whitespace-no-wrap">
-                      {teacher.email}
+                      {transaction?.course?.courseName}
                     </td>
-                    <td
-                      className={`px-6 py-4 w-72 text-center whitespace-no-wrap ${
-                        teacher.isAccess ? "text-green-500" : "text-red-500"
-                      }`}
-                    >
-                      {teacher.isAccess ? "Active" : "Inactive"}
+                    <td className="px-6 py-4 text-center whitespace-no-wrap">
+                      {transaction?.tutor?.email}
+                    </td>
+                    <td className="px-6 py-4 text-center whitespace-no-wrap">
+                      {transaction?.price}
+                    </td>
+                    <td className="px-6 py-4 text-center whitespace-no-wrap">
+                      {transaction?.transactionId?.razorpay_payment_id}
+                    </td>
+                    <td className="px-6 py-4 text-center whitespace-no-wrap">
+                      {formatDate(transaction?.createdAt)}
                     </td>
                     <td className="px-6 py-4 text-center whitespace-no-wrap">
                       <button
-                        onClick={() =>
-                          accessChange(teacher.email, teacher.isAccess)
-                        }
-                        className={`cursor-pointer border-2 border-gray-300 rounded-md w-24 h-10 ${
-                          !teacher.isAccess ? "text-green-500" : "text-red-500"
-                        }`}
+                        onClick={() => paymentChange(transaction._id)}
+                        className={`cursor-pointer hover:bg-gray-200 ${
+                          transaction?.paymentToTutor
+                            ? "text-green-500 font-semibold cursor-none hover:bg-transparent"
+                            : "text-red-500 font-semibold"
+                        } border-2 border-gray-300 rounded-md w-24 h-10`}
+                        disabled={transaction?.paymentToTutor}
                       >
-                        {teacher.isAccess ? "Block" : "Unblock"}
+                        {transaction?.paymentToTutor ? "Paid" : "Pending"}
                       </button>
                     </td>
                   </tr>
@@ -177,7 +191,7 @@ const TeacherListing = () => {
           ) : (
             <div className="text-center items-center">
               <h1 className="text-2xl p-5">
-                No Tutors found for the Search Keyword{" "}
+                No transactions found for the Search Keyword{" "}
                 <span className="text-blue-400">&#39;{search}&#39;</span>
               </h1>
             </div>
@@ -194,7 +208,7 @@ const TeacherListing = () => {
         )}
         <div className="text-center justify-center p-5">
           <Pagination
-            totalPosts={filteredTutor?.length}
+            totalPosts={filterTransactionDatas?.length}
             postsPerPage={postPerPage}
             setCurrentPage={setCurrentPage}
             currentPage={currentPage}
@@ -205,4 +219,4 @@ const TeacherListing = () => {
   );
 };
 
-export default TeacherListing;
+export default TransactionChart;

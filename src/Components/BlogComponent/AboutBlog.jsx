@@ -1,44 +1,45 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import toast, { Toaster } from "react-hot-toast";
-import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
 import UseAxiosPrivate from "../../Hooks/UseAxiosPrivate";
-import SyncLoader from "react-spinners/SyncLoader";
-import Pagination from "../Utilities/Pagination";
+import { SyncLoader } from "react-spinners";
+import PropTypes from "prop-types";
+import toast, { Toaster } from "react-hot-toast";
 
-const CreateBlog = () => {
+const AboutBlog = ({ blogId }) => {
   const axiosInstance = UseAxiosPrivate();
-  const navigate = useNavigate();
-  const [blogs, setBlogs] = useState([]);
-  const { email } = useSelector((state) => state.user);
+  const [blogDetails, setBlogDetails] = useState(null);
+  const [isModal, setisModal] = useState(false);
   const [finalImage, setFinalImage] = useState(null);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [filteredBlogs, setFilteredBlogs] = useState(null);
   const [inputs, setInputs] = useState({
     heading: "",
     content: "",
-    email: email,
+    id: blogId,
   });
 
-  const toggleModal = () => {
-    setIsModalVisible((prev) => !prev);
-  };
-
   useEffect(() => {
-    fetchBlogs();
+    fetchData();
   }, []);
 
-  const fetchBlogs = async () => {
+  const fetchData = async () => {
     try {
-      const response = await axiosInstance.get("/tutor/blogList", {
-        params: { email },
+      const response = await axiosInstance.get("/tutor/blogDetails", {
+        params: { blogId },
       });
-      console.log(response.data.blogList);
-      setBlogs(response.data.blogList);
-      setFilteredBlogs(response.data.blogList);
+      console.log("first", response.data.blogDetails);
+      setBlogDetails(response.data.blogDetails);
     } catch (error) {
-      console.error("Error fetching course list:", error);
+      console.log(error);
     }
+  };
+
+  const toggleModal = () => {
+    setisModal((prev) => !prev);
+  };
+
+  const handlechange = (e) => {
+    setInputs((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
   };
 
   const isValidFileUpload = (file) => {
@@ -67,37 +68,38 @@ const CreateBlog = () => {
     };
   };
 
-  const handlechange = (e) => {
-    setInputs((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
-  const createBlog = async () => {
+  const editBlog = async () => {
     try {
-      const res = await axiosInstance.post("/tutor/createBlog", {
+      if (
+        inputs.heading.trim() === "" &&
+        inputs.content.trim() === "" &&
+        finalImage === ""
+      ) {
+        return res.status(400);
+      }
+      const res = await axiosInstance.post("/tutor/editBlog", {
         inputs,
         image: finalImage,
       });
-      const data = await res.data;
-      console.log("data", data);
+      const data = await res.data.blog;
+      setBlogDetails({ ...data, status: res.status });
       return { ...data, status: res.status };
     } catch (error) {
-      toast.error("Error creating Blog: ", error.message);
+      toggleModal();
+      toast.error("Error Editing Blog", error.message);
       throw error;
     }
   };
 
-  const handleCreate = (e) => {
+  const handleEdit = (e) => {
     let toastId;
     e.preventDefault();
     toastId = toast.loading("loading...");
-    createBlog()
+    editBlog()
       .then((res) => {
         if (res && res.status === 200) {
           toast.remove(toastId);
-          toast.success("Blog Created Successfully", {
+          toast.success("Blog Edited Successfully", {
             duration: 2500,
           });
           toggleModal();
@@ -106,117 +108,52 @@ const CreateBlog = () => {
         }
       })
       .catch((err) => {
-        console.error("Error creating Blog:", err.message);
+        console.error("Error editing Blog:", err.message);
         toast.remove(toastId);
-        toast.error("Error creating Blog", { duration: 2000 });
+        toast.error("Error editing Blog", { duration: 2000 });
       });
   };
 
-  const filterBlogFunction = (val) => {
-    const filteredBlogs = blogs?.filter((item) => {
-      return val.toLowerCase() === ""
-        ? item
-        : item.blogHeading.toLowerCase().includes(val);
-    });
-
-    setFilteredBlogs(filteredBlogs);
-  };
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const postPerPage = 5;
-  const lastPostIndex = currentPage * postPerPage;
-  const firstPostIndex = lastPostIndex - postPerPage;
-  const currentPosts = filteredBlogs?.slice(firstPostIndex, lastPostIndex);
-
   return (
     <>
-      {currentPosts ? (
-        <div className="p-6">
-          {/* /////////////search//////////////// */}
-          <div className="md:max-w-xl md:mx-auto pb-3">
-            <div className="relative flex border border-gray-300 items-center w-full h-12 rounded-lg focus-within:shadow-lg bg-gray-100 overflow-hidden">
-              <div className="grid place-items-center h-full w-12 text-gray-300">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
-              </div>
-
-              <input
-                className="peer h-full w-full outline-none text-sm pl-3 text-gray-700 pr-2 placeholder:pl-5"
-                type="text"
-                id="search"
-                onChange={(e) => filterBlogFunction(e.target.value)}
-                placeholder="Search Blogs.."
-              />
-            </div>
+      {blogDetails ? (
+        <div>
+          <div className="p-5 flex justify-center text-center flex-col">
+            <h1 className="text-2xl font-semibold text-gray-700 pb-5">
+              {blogDetails?.blogHeading}
+            </h1>
+            <h1 className="text-base font-semibold text-gray-700 pb-5">
+              Story by{` `}
+              {blogDetails?.author?.name}
+            </h1>
+            <h1 className="text-base font-semibold text-gray-700 pb-5">
+              Posted on: {` `}
+              {new Date(blogDetails?.createdAt).toLocaleDateString("en-GB")}
+            </h1>
           </div>
-          {/* ///////////////////////////// */}
-          <span className="text-2xl font-bold">My Blogs: </span>
-          <div className="container mx-auto p-3 border-gray-200 overflow-x-auto">
-            <div className="flex flex-wrap">
-              {/* ////////////////////// */}
-              {currentPosts &&
-                currentPosts?.map((blog) => (
-                  <div
-                    key={blog._id}
-                    className="p-4 cursor-pointer h-40 border-2 mr-10 mt-4 mb-3 w-full flex rounded shadow-md items-center bg-white hover:bg-gray-100"
-                    onClick={() => navigate(`/tutor/blogDetails/${blog._id}`)}
-                  >
-                    <img
-                      src={blog?.thumbnail.url}
-                      alt="Thumbnail Image"
-                      className="w-28 h-28 opacity-80 hover:opacity-100"
-                    />
-                    <h1 className="text-xl font-bold text-gray-700 hover:text-gray-800 sm:px-40 px-14 mb-10">
-                      {blog?.blogHeading} <br />{" "}
-                      {new Date(blog?.createdAt).toLocaleDateString("en-GB")}
-                    </h1>
-                    {/* <h1 className="text-base font-semibold text-gray-700">
-                      {new Date(blog?.createdAt).toLocaleDateString("en-GB")}
-                    </h1> */}
-                  </div>
-                ))}
-              {/* /////////////////plus component////////////// */}
-              {blogs && (
-                <div
-                  onClick={toggleModal}
-                  className="p-4 h-32 w-full mr-10 border-2 mt-4 mb-3 flex flex-col justify-center items-center rounded shadow-md  bg-white hover:bg-gray-100"
-                >
-                  <img
-                    src="../../plus.png"
-                    alt="plus"
-                    className="w-14 opacity-80 hover:opacity-100"
-                  />
-                  <h1 className="text-3xl font-bold text-gray-700 text-center hover:text-gray-800 justify-center">
-                    Add Blog
-                  </h1>
-                </div>
-              )}
-              {/* ////////////////////////////////////////////// */}
-            </div>
+          <img src={blogDetails?.thumbnail?.url} className="mx-auto w-1/2" />
+          <div className="pt-12 p-24 w-full text-justify">
+            <span className="pt-3 text-lg">{blogDetails?.content}</span>
           </div>
-          {/* ////////////////////////Modal///////////////////////////////////// */}
-          {isModalVisible && (
+          <div className="justify-end p-3 text-end">
+            <button
+              onClick={toggleModal}
+              className="p-3 border border-gray-200 bg-gray-100 text-lg text-blue-700 font-semibold rounded-md hover:bg-gray-200"
+            >
+              Edit Blog
+            </button>
+            <Toaster />
+          </div>
+          {isModal && (
             <div
               aria-hidden="true"
               className="flex fixed bg-gray-300 bg-opacity-20 z-50 justify-center items-center w-full md:inset-0 max-h-full backdrop-filter backdrop-blur-sm"
             >
-              <div className="relative  w-full  max-w-2xl max-h-full">
+              <div className="relative  w-full  max-w-md max-h-full">
                 <div className="relative bg-white rounded-lg shadow">
                   <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
                     <h3 className="text-lg font-semibold text-gray-900">
-                      Create Blog
+                      Create Chapter
                     </h3>
 
                     <button
@@ -243,14 +180,14 @@ const CreateBlog = () => {
                       <span className="sr-only">Close modal</span>
                     </button>
                   </div>
-                  <form className="p-4 md:p-5" onSubmit={handleCreate}>
+                  <form className="p-4 md:p-5" onSubmit={handleEdit}>
                     <div className="grid gap-4 mb-4 grid-cols-2">
                       <div className="col-span-2">
                         <label
                           htmlFor="heading"
                           className="block mb-2 text-sm font-medium text-gray-900"
                         >
-                          Blog Heading <span className="text-red-500">*</span>
+                          Blog Heading
                         </label>
                         <input
                           type="text"
@@ -258,24 +195,25 @@ const CreateBlog = () => {
                           id="heading"
                           onChange={handlechange}
                           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                          placeholder="Give a name to your Course"
+                          placeholder={blogDetails.blogHeading}
                           required=""
                         />
                       </div>
+
                       <div className="col-span-2">
                         <label
                           htmlFor="content"
                           className="block mb-2 text-sm font-medium text-gray-900"
                         >
-                          Blog Content <span className="text-red-500">*</span>
+                          Content
                         </label>
                         <input
                           type="text"
                           name="content"
                           id="content"
                           onChange={handlechange}
-                          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 h-16"
-                          placeholder="Course Description here"
+                          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                          placeholder={blogDetails.content}
                           required=""
                         />
                       </div>
@@ -284,7 +222,7 @@ const CreateBlog = () => {
                           htmlFor="formFileLg"
                           className="block mb-2 text-sm font-medium text-gray-900"
                         >
-                          Thumbnail <span className="text-red-500">*</span>
+                          Thumbnail
                         </label>
                         <input
                           className="bg-gray-50 border border-gray-300 text-gray-500 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 p-2.5 relative m-0 block w-full min-w-0 flex-auto cursor-pointer border-solid bg-clip-padding px-3 py-[0.32rem] font-normal leading-[2.15] transition duration-300 ease-in-out file:-mx-3 file:-my-[0.32rem] file:cursor-pointer file:overflow-hidden file:rounded-none file:border-0 file:border-solid file:border-inherit file:bg-neutral-400 file:px-3 file:py-[0.32rem] file:text-neutral-700 file:transition file:duration-150 file:ease-in-out file:[border-inline-end-width:1px] file:[margin-inline-end:0.75rem] hover:file:bg-neutral-300 focus:border-primary focus:text-neutral-700 focus:shadow-te-primary focus:outline-none"
@@ -308,15 +246,6 @@ const CreateBlog = () => {
               </div>
             </div>
           )}
-          <div className="text-center justify-center p-5">
-            <Pagination
-              totalPosts={filteredBlogs?.length}
-              postsPerPage={postPerPage}
-              setCurrentPage={setCurrentPage}
-              currentPage={currentPage}
-            />
-          </div>
-          <Toaster />
         </div>
       ) : (
         <div className="flex items-center justify-center h-screen">
@@ -332,4 +261,8 @@ const CreateBlog = () => {
   );
 };
 
-export default CreateBlog;
+AboutBlog.propTypes = {
+  blogId: PropTypes.string.isRequired,
+};
+
+export default AboutBlog;

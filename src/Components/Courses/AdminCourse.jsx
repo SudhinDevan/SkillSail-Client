@@ -1,15 +1,13 @@
 import { useEffect, useState } from "react";
 import UseAxiosPrivate from "../../Hooks/UseAxiosPrivate";
-import { useSelector } from "react-redux";
-import SyncLoader from "react-spinners/SyncLoader";
+import { SyncLoader } from "react-spinners";
 import Pagination from "../Utilities/Pagination";
 
-const StudentListingTeacherSide = () => {
+const AdminCourse = () => {
   const axiosPrivate = UseAxiosPrivate();
+  const [course, setCourse] = useState(null);
   const [search, setSearch] = useState("");
-  const [students, setStudents] = useState(null);
-  const [filteredUsers, setFilteredUsers] = useState(null);
-  const { id } = useSelector((state) => state.user);
+  const [filterCourseDatas, setFilterCourseDatas] = useState(null);
 
   useEffect(() => {
     fetchData();
@@ -17,37 +15,34 @@ const StudentListingTeacherSide = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axiosPrivate.post("/tutor/studentListing", {
-        id,
-      });
-      console.log("student", response.data.studentsWithCourses);
-      setStudents(response.data.studentsWithCourses);
-      setFilteredUsers(response.data.studentsWithCourses);
+      const response = await axiosPrivate.get("/admin/courseList");
+      setCourse(response.data.course);
+      setFilterCourseDatas(response.data.course);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const filterUserFunction = (val) => {
+  const filterCourseFunction = (val) => {
     setSearch(val);
-    const filteredList = students?.filter((item) => {
+    const filteredCourses = course?.filter((item) => {
       return val.toLowerCase() === ""
         ? item
-        : item.student.email.toLowerCase().includes(val);
+        : item.courseName.toLowerCase().includes(val);
     });
 
-    setFilteredUsers(filteredList);
+    setFilterCourseDatas(filteredCourses);
   };
 
   const [currentPage, setCurrentPage] = useState(1);
   const postPerPage = 2;
   const lastPostIndex = currentPage * postPerPage;
   const firstPostIndex = lastPostIndex - postPerPage;
-  const currentPosts = filteredUsers?.slice(firstPostIndex, lastPostIndex);
+  const currentPosts = filterCourseDatas?.slice(firstPostIndex, lastPostIndex);
 
   return (
     <>
-      <div className="p-6">
+      <div className="my-8">
         {/* /////////////search//////////////// */}
         <div className="md:max-w-xl md:mx-auto p-3">
           <div className="relative flex border border-gray-300 items-center w-full h-12 rounded-lg focus-within:shadow-lg bg-gray-100 overflow-hidden">
@@ -67,13 +62,14 @@ const StudentListingTeacherSide = () => {
                 />
               </svg>
             </div>
-
             <input
               className="peer h-full w-full outline-none text-sm pl-3 text-gray-700 pr-2 placeholder:pl-5"
               type="text"
               id="search"
-              onChange={(e) => filterUserFunction(e.target.value)}
-              placeholder="Search Email..."
+              onChange={(e) => {
+                filterCourseFunction(e.target.value);
+              }}
+              placeholder="Search something.."
             />
           </div>
         </div>
@@ -83,40 +79,40 @@ const StudentListingTeacherSide = () => {
             <table className="min-w-full divide-y divide-gray-200">
               <thead>
                 <tr>
-                  <th className="px-6 py-3 bg-gray-50 text-xs text-center leading-4 font-bold text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 bg-gray-50 text-xs w-2/12 text-center leading-4 font-bold text-gray-500 uppercase tracking-wider">
                     Index
                   </th>
-                  <th className="px-6 py-3 bg-gray-50 text-xs text-center leading-4 font-bold text-gray-500 uppercase tracking-wider">
-                    Name
+                  <th className="px-6 py-3 bg-gray-50 text-xs w-2/12 text-center leading-4 font-bold text-gray-500 uppercase tracking-wider">
+                    Course Name
                   </th>
-                  <th className="px-6 py-3 bg-gray-50 text-xs text-center leading-4 font-bold text-gray-500 uppercase tracking-wider">
-                    Email
+                  <th className="px-6 py-3 bg-gray-50 text-xs w-2/12 text-center leading-4 font-bold text-gray-500 uppercase tracking-wider">
+                    Tutor Name
                   </th>
-                  <th className="px-6 py-3 bg-gray-50 text-xs text-center leading-4 font-bold text-gray-500 uppercase tracking-wider">
-                    Enrolled Course
-                  </th>
-                  <th className="px-6 py-3 bg-gray-50 text-xs text-center leading-4 font-bold text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 bg-gray-50 text-xs w-2/12 text-center leading-4 font-bold text-gray-500 uppercase tracking-wider">
                     Course Price
+                  </th>
+                  <th className="px-6 py-3 bg-gray-50 text-xs w-2/12 text-center leading-4 font-bold text-gray-500 uppercase tracking-wider">
+                    Number of Students
                   </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {currentPosts.map((user, i) => (
                   <tr key={i}>
-                    <td className="px-6 py-4 text-center whitespace-no-wrap font-semibold">
-                      {i + 1 + currentPage * postPerPage - postPerPage}
+                    <td className="px-6 py-4 text-center whitespace-no-wrap font-semibold w-2/12">
+                      {i + 1}
                     </td>
-                    <td className="px-6 py-4 text-center whitespace-no-wrap font-semibold">
-                      {user.student.name}
+                    <td className="px-6 py-4 text-center whitespace-no-wrap font-semibold w-2/12">
+                      {user.courseName}
                     </td>
-                    <td className="px-6 py-4 text-center whitespace-no-wrap font-semibold">
-                      {user.student.email}
+                    <td className="px-6 py-4 text-center whitespace-no-wrap font-semibold w-2/12">
+                      {user.tutor.name}
                     </td>
-                    <td className="px-6 py-4 text-center whitespace-no-wrap font-semibold">
-                      {user.course.courseName}
+                    <td className="px-6 py-4 text-center whitespace-no-wrap font-semibold w-2/12">
+                      ₹ {user.price}
                     </td>
-                    <td className="px-6 py-4 text-center whitespace-no-wrap font-semibold">
-                      ₹{user.course.price}
+                    <td className="px-6 py-4 text-center whitespace-no-wrap font-semibold w-2/12">
+                      {user.students.length}
                     </td>
                   </tr>
                 ))}
@@ -125,7 +121,7 @@ const StudentListingTeacherSide = () => {
           ) : (
             <div className="text-center items-center">
               <h1 className="text-2xl p-5">
-                No transactions found for the Search Keyword{" "}
+                No courses found for the Search Keyword{" "}
                 <span className="text-blue-400">&#39;{search}&#39;</span>
               </h1>
             </div>
@@ -142,7 +138,7 @@ const StudentListingTeacherSide = () => {
         )}
         <div className="text-center justify-center p-5">
           <Pagination
-            totalPosts={filteredUsers?.length}
+            totalPosts={filterCourseDatas?.length}
             postsPerPage={postPerPage}
             setCurrentPage={setCurrentPage}
             currentPage={currentPage}
@@ -153,4 +149,4 @@ const StudentListingTeacherSide = () => {
   );
 };
 
-export default StudentListingTeacherSide;
+export default AdminCourse;

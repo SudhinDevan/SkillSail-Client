@@ -7,6 +7,7 @@ import ChapterDetails from "../Pages/Chapter/ChapterDetails";
 import StudentListing from "../Pages/Listing/StudentListing";
 import PublicCourses from "../Pages/Course/PublicCourse";
 import Blog from "../Pages/Blog/Blog";
+import BlogDetails from "../Pages/Blog/BlogDetails";
 
 const TutorRoutes = () => {
   return (
@@ -20,6 +21,7 @@ const TutorRoutes = () => {
           path="/tutor/courseDetails/:courseId"
           element={<CourseDetails />}
         />
+        <Route path="/tutor/blogDetails/:blogId" element={<BlogDetails />} />
         <Route
           path="/tutor/chapterDetails/:chapterId"
           element={<ChapterDetails />}

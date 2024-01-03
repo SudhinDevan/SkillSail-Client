@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import SyncLoader from "react-spinners/SyncLoader";
+import Pagination from "../Utilities/Pagination";
 
 const CurrentCourse = () => {
   const axiosPrivate = UseAxiosPrivate();
@@ -12,6 +13,7 @@ const CurrentCourse = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { email } = useSelector((state) => state.user);
   const [finalImage, setFinalImage] = useState(null);
+  const [filteredCourses, setFilteredCourses] = useState(null);
 
   const [inputs, setInputs] = useState({
     coursename: "",
@@ -23,18 +25,20 @@ const CurrentCourse = () => {
   });
 
   useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const response = await axiosPrivate.get("/tutor/courseList", {
-          params: { email },
-        });
-        setCourses(response.data.coursesList || []);
-      } catch (error) {
-        console.error("Error fetching course list:", error);
-      }
-    };
     fetchCourses();
-  }, [axiosPrivate, email]);
+  }, [email]);
+
+  const fetchCourses = async () => {
+    try {
+      const response = await axiosPrivate.get("/tutor/courseList", {
+        params: { email },
+      });
+      setCourses(response.data.coursesList || []);
+      setFilteredCourses(response.data.coursesList || []);
+    } catch (error) {
+      console.error("Error fetching course list:", error);
+    }
+  };
 
   const isValidFileUpload = (file) => {
     const validExtensions = ["png", "jpeg", "jpg"];
@@ -130,16 +134,62 @@ const CurrentCourse = () => {
       });
   };
 
+  const filterCourseFunction = (val) => {
+    const filteredCourses = courses?.filter((item) => {
+      return val.toLowerCase() === ""
+        ? item
+        : item.courseName.toLowerCase().includes(val);
+    });
+
+    setFilteredCourses(filteredCourses);
+  };
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const postPerPage = 2;
+  const lastPostIndex = currentPage * postPerPage;
+  const firstPostIndex = lastPostIndex - postPerPage;
+  const currentPosts = filteredCourses?.slice(firstPostIndex, lastPostIndex);
+
   return (
     <>
       {courses ? (
         <div className="p-6">
+          {/* /////////////search//////////////// */}
+          <div className="md:max-w-xl md:mx-auto pb-3">
+            <div className="relative flex border border-gray-300 items-center w-full h-12 rounded-lg focus-within:shadow-lg bg-gray-100 overflow-hidden">
+              <div className="grid place-items-center h-full w-12 text-gray-300">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+              </div>
+
+              <input
+                className="peer h-full w-full outline-none text-sm pl-3 text-gray-700 pr-2 placeholder:pl-5"
+                type="text"
+                id="search"
+                onChange={(e) => filterCourseFunction(e.target.value)}
+                placeholder="Search Courses.."
+              />
+            </div>
+          </div>
+          {/* ///////////////////////////// */}
           <span className="text-3xl font-bold">Classes: </span>
           <div className="container mx-auto p-3 border-gray-200 overflow-x-auto">
             <div className="flex flex-wrap">
               {/* ////////////////////// */}
-              {courses &&
-                courses?.map((course) => (
+              {currentPosts &&
+                currentPosts.map((course) => (
                   <div
                     key={course._id}
                     onClick={() =>
@@ -339,6 +389,14 @@ const CurrentCourse = () => {
           />
         </div>
       )}
+      <div className="text-center justify-center p-5">
+        <Pagination
+          totalPosts={filteredCourses?.length}
+          postsPerPage={postPerPage}
+          setCurrentPage={setCurrentPage}
+          currentPage={currentPage}
+        />
+      </div>
     </>
   );
 };

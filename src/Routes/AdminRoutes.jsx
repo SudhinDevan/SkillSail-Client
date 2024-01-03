@@ -6,6 +6,8 @@ import AdminAuthRoute from "../Utils/AdminAuthRoute";
 import UserListing from "../Pages/Listing/UserListing";
 import TeacherApprovalListing from "../Pages/Listing/TeacherApprovalListing";
 import TeacherListing from "../Pages/Listing/TeacherListing";
+import AdminCourseSection from "../Pages/Course/AdminCourseSection";
+import TransactionHistory from "../Pages/Transactions/TransactionHistory";
 
 const AdminRoutes = () => {
   return (
@@ -48,6 +50,22 @@ const AdminRoutes = () => {
           element={
             <AdminAuthRoute>
               <TeacherListing />
+            </AdminAuthRoute>
+          }
+        />
+        <Route
+          path="/admin/courses"
+          element={
+            <AdminAuthRoute>
+              <AdminCourseSection />
+            </AdminAuthRoute>
+          }
+        />
+        <Route
+          path="/admin/transactions"
+          element={
+            <AdminAuthRoute>
+              <TransactionHistory />
             </AdminAuthRoute>
           }
         />
