@@ -87,7 +87,14 @@ const TutorNavbar = () => {
                 >
                   STUDENTS
                 </span>
-                <li>CHATS</li>
+                <span
+                 className={`cursor-pointer hover:text-orange-400 transition-all duration-300 ${
+                  location.pathname === "/tutor/chat"
+                    ? "text-orange-400"
+                    : ""
+                }`}
+                onClick={() => navigate("/tutor/chat")}
+                >CHATS</span>
                 <span
                   className={`cursor-pointer hover:text-orange-400 transition-all duration-300 ${
                     location.pathname === "/tutor/blog" ? "text-orange-400" : ""

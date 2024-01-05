@@ -12,6 +12,8 @@ import ChapterDetailsUserSide from "../Pages/Chapter/chapterDetailsUserSide";
 import MyLearning from "../Pages/MyLearning/MyLearning";
 import ForgotPassword from "../Pages/Otp/ForgotPassword";
 import ChangePassword from "../Pages/Profile/ChangePassword";
+import DisplayBlog from "../Pages/Blog/DisplayBlog";
+import DisplayBlogDetails from "../Pages/Blog/DisplayBlogDetails";
 
 const AuthRoutes = () => {
   return (
@@ -63,6 +65,22 @@ const AuthRoutes = () => {
           element={
             <ProtectedUserRoutes>
               <UserProfile />
+            </ProtectedUserRoutes>
+          }
+        />
+        <Route
+          path="/blog"
+          element={
+            <ProtectedUserRoutes>
+              <DisplayBlog />
+            </ProtectedUserRoutes>
+          }
+        />
+        <Route
+          path="/blog/:blogId"
+          element={
+            <ProtectedUserRoutes>
+              <DisplayBlogDetails />
             </ProtectedUserRoutes>
           }
         />

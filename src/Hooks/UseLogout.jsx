@@ -11,7 +11,6 @@ const useLogout = () => {
   const logout = async () => {
     try {
       await axios.get("/logout");
-      console.log("success");
       dispatch(userLogout());
       navigate("/login");
     } catch (error) {

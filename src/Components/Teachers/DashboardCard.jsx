@@ -1,7 +1,7 @@
 
-const DashboardCard = ({Icon, text, value}) => {
+const DashboardCard = ({Icon, text, value, onClick, className}) => {
   return (
-    <div className='w-full md:w-1/5 h-full bg-gray-600 rounded-md border-white border-2'>
+    <div className={`w-full md:w-1/5 h-full bg-gray-600 rounded-md border-white border-2 ${className}`} onClick={onClick}>
       <div className='h-1/2 w-full flex justify-center items-end'>
         {Icon}
       </div>

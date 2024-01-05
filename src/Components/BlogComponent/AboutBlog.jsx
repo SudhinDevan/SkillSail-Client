@@ -24,7 +24,6 @@ const AboutBlog = ({ blogId }) => {
       const response = await axiosInstance.get("/tutor/blogDetails", {
         params: { blogId },
       });
-      console.log("first", response.data.blogDetails);
       setBlogDetails(response.data.blogDetails);
     } catch (error) {
       console.log(error);
@@ -131,8 +130,8 @@ const AboutBlog = ({ blogId }) => {
               {new Date(blogDetails?.createdAt).toLocaleDateString("en-GB")}
             </h1>
           </div>
-          <img src={blogDetails?.thumbnail?.url} className="mx-auto w-1/2" />
-          <div className="pt-12 p-24 w-full text-justify">
+          <img src={blogDetails?.thumbnail?.url} className="mx-auto md:w-1/2 w-full p-2" />
+          <div className="pt-12 p-5 md:p-24 w-full text-justify">
             <span className="pt-3 text-lg">{blogDetails?.content}</span>
           </div>
           <div className="justify-end p-3 text-end">

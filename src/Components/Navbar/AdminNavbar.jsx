@@ -49,6 +49,16 @@ const AdminNavbar = () => {
               <ul className="flex gap-20 font-semibold">
                 <span
                   className={`cursor-pointer hover:text-orange-400 transition-all duration-300 ${
+                    location.pathname === "/admin/dashboard"
+                      ? "text-orange-400"
+                      : ""
+                  }`}
+                  onClick={() => navigate("/admin/dashboard")}
+                >
+                  DASHBOARD
+                </span>
+                <span
+                  className={`cursor-pointer hover:text-orange-400 transition-all duration-300 ${
                     location.pathname === "/admin/users"
                       ? "text-orange-400"
                       : ""

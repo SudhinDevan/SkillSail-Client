@@ -1,11 +1,49 @@
+import { useEffect, useState } from "react";
 import DetailsHome from "../../Components/HelperComponents/DetailsHome";
 import SearchBar from "../../Components/HelperComponents/SearchBar";
-
+import AxiosInstance from "../../Axios/AxiosInstance";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const UserHome = () => {
-    return(
-        <>
-        <div className="bg-gray-100 h-auto">
+  const { role } = useSelector((state) => state.user);
+  const navigate = useNavigate();
+  const [blogs, setBlogs] = useState(null);
+
+  useEffect(() => {
+    fetchBlogData();
+  }, []);
+
+  const fetchBlogData = async () => {
+    const response = await AxiosInstance.get("/blog");
+    setBlogs(response.data.blog);
+  };
+
+  const blogDetails = (id) => {
+    if (role === 2000) {
+      navigate(`/blog/${id}`);
+    }
+    if (!role) {
+      Swal.fire({
+        title: "You are not logged In!",
+        text: "Login to continue!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#fea663",
+        cancelButtonColor: "#004787",
+        confirmButtonText: "Login",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/login");
+        }
+      });
+    }
+  };
+
+  return (
+    <>
+      <div className="bg-gray-100 h-auto">
         <div className="mx-auto p-2 border-b-4 border-gray-200">
           <div className="flex flex-col sm:flex-row">
             <div className="w-full sm:w-1/2 h-80 flex flex-col">
@@ -71,9 +109,32 @@ const UserHome = () => {
             />
           </div>
         </div>
+        <div className="md:flex">
+          {blogs &&
+            blogs.map((blog, i) => (
+              <div key={i} className="w-full h-96 p-3">
+                <div className="h-full p-5 hover:bg-gray-200 rounded-md">
+                  <img
+                    src={blog.thumbnail.url}
+                    className="w-72 h-48"
+                    alt="img"
+                  />
+                  <h1 className="text-xl py-3 font-semibold">
+                    {blog.blogHeading}
+                  </h1>
+                  <h1
+                    className="font-semibold text-lg text-blue-400 text-end cursor-pointer hover:-translate-y-2 transition-all duration-500"
+                    onClick={() => blogDetails(blog._id)}
+                  >
+                    Go to Blog &#10095;
+                  </h1>
+                </div>
+              </div>
+            ))}
+        </div>
       </div>
-        </>
-    )
-}
+    </>
+  );
+};
 
 export default UserHome;

@@ -8,6 +8,7 @@ import TeacherApprovalListing from "../Pages/Listing/TeacherApprovalListing";
 import TeacherListing from "../Pages/Listing/TeacherListing";
 import AdminCourseSection from "../Pages/Course/AdminCourseSection";
 import TransactionHistory from "../Pages/Transactions/TransactionHistory";
+// import Error from "../Pages/Error/Error";
 
 const AdminRoutes = () => {
   return (
@@ -69,6 +70,7 @@ const AdminRoutes = () => {
             </AdminAuthRoute>
           }
         />
+        {/* <Route path="*" element={<Error />} /> */}
       </Routes>
     </>
   );

@@ -47,7 +47,6 @@ const SignIn = () => {
         }
       );
       const data = await res.data;
-      console.log(data);
       return { ...data, status: res.status };
     } catch (err) {
       toast.remove(toastId);
@@ -101,7 +100,6 @@ const SignIn = () => {
           );
           navigate("/tutor/dashboard");
         } else if (res.status === 401) {
-          console.log("sid", res);
           toast.remove(toastId);
           toast.error("Please wait till your profile is verified by the admin");
           setTimeout(() => {
@@ -130,7 +128,6 @@ const SignIn = () => {
     try {
       let toastId = toast.loading("Loading...");
       const res = await Axios.post("/forgotPassword", email);
-      console.log(res);
       toast.remove(toastId);
       navigate("/forgotPassword", { state: res.data.user });
     } catch (err) {

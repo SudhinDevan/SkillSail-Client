@@ -62,7 +62,6 @@ const SignUp = () => {
     }));
   };
 
-  console.log(inputs);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -139,7 +138,6 @@ const SignUp = () => {
     await AxiosInstance.post("/signup", userData)
       .then((response) => {
         if (response) {
-          console.log();
           toast.remove(toastId);
           toast.success("Registration Successful", {
             duration: 1500,

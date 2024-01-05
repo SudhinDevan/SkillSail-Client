@@ -1,15 +1,15 @@
+import TutorChat from "../../Components/Chat/TutorChat";
 import Footer from "../../Components/Navbar/Footer";
 import TutorNavbar from "../../Components/Navbar/TutorNavbar";
-import CreateBlog from "../../Components/BlogComponent/CreateBlog.jsx";
 
-const Blog = () => {
+const TutorSideChat = () => {
   return (
     <>
       <TutorNavbar />
-      <CreateBlog />
+      <TutorChat />
       <Footer />
     </>
   );
 };
 
-export default Blog;
+export default TutorSideChat;

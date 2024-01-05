@@ -72,15 +72,22 @@ const UserNavbar = () => {
             >
               MY LEARNING
             </span>
-            <li>BLOG</li>
-            <li
+            <span
+              className={`cursor-pointer hover:text-orange-400 transition-all duration-300 ${
+                location.pathname === "/blog" ? "text-orange-400" : ""
+              }`}
+              onClick={() => navigate("/blog")}
+            >
+              BLOG
+            </span>
+            <span
               className={`cursor-pointer hover:text-orange-400 transition-all duration-300 ${
                 location.pathname === "/profile" ? "text-orange-400" : ""
               }`}
               onClick={() => navigate("/profile")}
             >
               PROFILE
-            </li>
+            </span>
           </ul>
         </div>
         <div className="hidden md:flex gap-4">

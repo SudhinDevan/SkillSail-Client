@@ -34,7 +34,6 @@ const ForgotPassword = () => {
     e.preventDefault();
     try {
       const res = await handleVerifyAccount();
-      console.log(res);
         toast.loading("Validating...", { duration: 2500 });
         if (res.status === 200) {
             navigate("/changePassword", {state: res.updateUser._id})

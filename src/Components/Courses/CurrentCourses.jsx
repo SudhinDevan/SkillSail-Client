@@ -26,7 +26,7 @@ const CurrentCourse = () => {
 
   useEffect(() => {
     fetchCourses();
-  }, [email]);
+  }, []);
 
   const fetchCourses = async () => {
     try {
@@ -117,7 +117,7 @@ const CurrentCourse = () => {
       .then((res) => {
         if (res && res.status === 200) {
           toast.remove(toastId);
-          setCourses((prev) => [...prev, res.course]);
+          fetchCourses();
           toast.success("Course Created Successfully", {
             duration: 2500,
           });
@@ -145,7 +145,7 @@ const CurrentCourse = () => {
   };
 
   const [currentPage, setCurrentPage] = useState(1);
-  const postPerPage = 2;
+  const postPerPage = 6;
   const lastPostIndex = currentPage * postPerPage;
   const firstPostIndex = lastPostIndex - postPerPage;
   const currentPosts = filteredCourses?.slice(firstPostIndex, lastPostIndex);

@@ -22,7 +22,6 @@ const PurchasedCourses = () => {
     fetchData();
   }, []);
 
-  console.log(courses);
   return (
     <>
       {courses ? (

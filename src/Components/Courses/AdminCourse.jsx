@@ -89,6 +89,9 @@ const AdminCourse = () => {
                     Tutor Name
                   </th>
                   <th className="px-6 py-3 bg-gray-50 text-xs w-2/12 text-center leading-4 font-bold text-gray-500 uppercase tracking-wider">
+                    Course status
+                  </th>
+                  <th className="px-6 py-3 bg-gray-50 text-xs w-2/12 text-center leading-4 font-bold text-gray-500 uppercase tracking-wider">
                     Course Price
                   </th>
                   <th className="px-6 py-3 bg-gray-50 text-xs w-2/12 text-center leading-4 font-bold text-gray-500 uppercase tracking-wider">
@@ -107,6 +110,9 @@ const AdminCourse = () => {
                     </td>
                     <td className="px-6 py-4 text-center whitespace-no-wrap font-semibold w-2/12">
                       {user.tutor.name}
+                    </td>
+                    <td className="px-6 py-4 text-center whitespace-no-wrap font-semibold w-2/12">
+                      {user.isCompleted ? "Public" : "Private"}
                     </td>
                     <td className="px-6 py-4 text-center whitespace-no-wrap font-semibold w-2/12">
                       ₹ {user.price}

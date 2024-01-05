@@ -17,7 +17,6 @@ const TransactionChart = () => {
   const fetchData = async () => {
     try {
       const res = await axiosPrivate.get("/admin/transactions");
-      console.log(res.data.statement);
       setTransactions(res.data.statement);
       setFilterTransactionDatas(res.data.statement);
     } catch (error) {

@@ -5,6 +5,8 @@ import { useSelector } from "react-redux";
 import UseAxiosPrivate from "../../Hooks/UseAxiosPrivate";
 import SyncLoader from "react-spinners/SyncLoader";
 import Pagination from "../Utilities/Pagination";
+import { RiDeleteBin7Fill } from "react-icons/ri";
+import Swal from "sweetalert2";
 
 const CreateBlog = () => {
   const axiosInstance = UseAxiosPrivate();
@@ -33,7 +35,6 @@ const CreateBlog = () => {
       const response = await axiosInstance.get("/tutor/blogList", {
         params: { email },
       });
-      console.log(response.data.blogList);
       setBlogs(response.data.blogList);
       setFilteredBlogs(response.data.blogList);
     } catch (error) {
@@ -81,7 +82,6 @@ const CreateBlog = () => {
         image: finalImage,
       });
       const data = await res.data;
-      console.log("data", data);
       return { ...data, status: res.status };
     } catch (error) {
       toast.error("Error creating Blog: ", error.message);
@@ -96,6 +96,7 @@ const CreateBlog = () => {
     createBlog()
       .then((res) => {
         if (res && res.status === 200) {
+          setFilteredBlogs((prev) => [...prev, res.blog]);
           toast.remove(toastId);
           toast.success("Blog Created Successfully", {
             duration: 2500,
@@ -122,8 +123,49 @@ const CreateBlog = () => {
     setFilteredBlogs(filteredBlogs);
   };
 
+  const deleteBlog = async (blogId) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#fea663",
+      cancelButtonColor: "#004787",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await axiosInstance.delete(
+            `/tutor/deleteBlog/${blogId}`
+          );
+          if (response.status === 200) {
+            fetchBlogs();
+            Swal.fire({
+              title: "Deleted!",
+              text: "Your file has been deleted.",
+              icon: "success",
+            });
+          } else {
+            Swal.fire({
+              title: "Error",
+              text: "Unable to delete the chapter.",
+              icon: "error",
+            });
+          }
+        } catch (error) {
+          console.error("Error deleting chapter:", error);
+          Swal.fire({
+            title: "Error",
+            text: "An error occurred while deleting the chapter.",
+            icon: "error",
+          });
+        }
+      }
+    });
+  };
+
   const [currentPage, setCurrentPage] = useState(1);
-  const postPerPage = 5;
+  const postPerPage = 35;
   const lastPostIndex = currentPage * postPerPage;
   const firstPostIndex = lastPostIndex - postPerPage;
   const currentPosts = filteredBlogs?.slice(firstPostIndex, lastPostIndex);
@@ -160,31 +202,39 @@ const CreateBlog = () => {
                 placeholder="Search Blogs.."
               />
             </div>
-          </div>
+          </div> 
           {/* ///////////////////////////// */}
           <span className="text-2xl font-bold">My Blogs: </span>
-          <div className="container mx-auto p-3 border-gray-200 overflow-x-auto">
+          <div className="container mx-auto p-3 border-gray-200 w-screen overflow-x-hidden ">
             <div className="flex flex-wrap">
               {/* ////////////////////// */}
               {currentPosts &&
                 currentPosts?.map((blog) => (
                   <div
                     key={blog._id}
-                    className="p-4 cursor-pointer h-40 border-2 mr-10 mt-4 mb-3 w-full flex rounded shadow-md items-center bg-white hover:bg-gray-100"
-                    onClick={() => navigate(`/tutor/blogDetails/${blog._id}`)}
+                    className="p-4 cursor-pointer h-40 border-2 mr-10 mt-4 mb-3 w-full flex rounded shadow-md items-center hover:bg-gray-100"
                   >
                     <img
                       src={blog?.thumbnail.url}
                       alt="Thumbnail Image"
                       className="w-28 h-28 opacity-80 hover:opacity-100"
                     />
-                    <h1 className="text-xl font-bold text-gray-700 hover:text-gray-800 sm:px-40 px-14 mb-10">
-                      {blog?.blogHeading} <br />{" "}
-                      {new Date(blog?.createdAt).toLocaleDateString("en-GB")}
-                    </h1>
-                    {/* <h1 className="text-base font-semibold text-gray-700">
-                      {new Date(blog?.createdAt).toLocaleDateString("en-GB")}
-                    </h1> */}
+                    <div
+                      className="md:w-5/6"
+                      onClick={() => navigate(`/tutor/blogDetails/${blog._id}`)}
+                    >
+                      <h1 className="w-full md:text-xl text-sm font-bold text-gray-700 hover:text-gray-800 sm:px-40 px-5 md:px-14 mb-10 truncate overflow-hidden overflow-ellipsis">
+                        {blog?.blogHeading} <br />{" "}
+                        {new Date(blog?.createdAt).toLocaleDateString("en-GB")}
+                      </h1>
+                    </div>
+                    <div className="ml-auto pt-1 hover:cursor-pointer hover:-translate-y-1 transition-all duration-300">
+                      <RiDeleteBin7Fill
+                        className="opacity-90"
+                        size="25px"
+                        onClick={() => deleteBlog(blog._id)}
+                      />
+                    </div>
                   </div>
                 ))}
               {/* /////////////////plus component////////////// */}

@@ -13,7 +13,6 @@ const OtpVerify = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const data = location.state;
-  console.log(data);
 
   const handleOtpChange = (index, value) => {
     const newOtpValues = [...otpValues];

@@ -20,7 +20,6 @@ const StudentListingTeacherSide = () => {
       const response = await axiosPrivate.post("/tutor/studentListing", {
         id,
       });
-      console.log("student", response.data.studentsWithCourses);
       setStudents(response.data.studentsWithCourses);
       setFilteredUsers(response.data.studentsWithCourses);
     } catch (error) {

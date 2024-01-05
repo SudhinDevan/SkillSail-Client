@@ -6,6 +6,7 @@ import { RiDeleteBin7Fill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import SyncLoader from "react-spinners/SyncLoader";
 import Swal from "sweetalert2";
+import Rating from "@mui/material/Rating";
 
 const AboutCourse = ({ courseId }) => {
   const AxiosInstance = UseAxiosPrivate();
@@ -16,6 +17,7 @@ const AboutCourse = ({ courseId }) => {
   const [chapterDetails, setChapterDetails] = useState(null);
   const [file, setFile] = useState(null);
   const [isChecked, setIsChecked] = useState(null);
+  const [review, setReview] = useState(null);
   const [finalImage, setFinalImage] = useState(null);
   const [inputs, setInputs] = useState({
     chapterName: "",
@@ -40,11 +42,10 @@ const AboutCourse = ({ courseId }) => {
         const response = await AxiosInstance.get("/tutor/courseDetails", {
           params: { courseId },
         });
-
+        console.log(response.data.courseData.reviews);
+        setReview(response.data.courseData.reviews);
         setCourseDetails(response.data.courseData);
         setIsChecked(response.data.courseData.isCompleted);
-
-        console.log("hello", response.data.courseData);
       } catch (error) {
         console.error("Error fetching course details:", error);
       }
@@ -74,8 +75,6 @@ const AboutCourse = ({ courseId }) => {
   const handleCheckboxChange = () => {
     setIsChecked(!isChecked);
   };
-
-  console.log("course", courseDetails);
 
   const handlechange = (e) => {
     setInputs((prev) => ({
@@ -165,7 +164,6 @@ const AboutCourse = ({ courseId }) => {
               icon: "success",
             });
           } else {
-            console.log(2);
             // Handle other response statuses if needed
             Swal.fire({
               title: "Error",
@@ -174,7 +172,6 @@ const AboutCourse = ({ courseId }) => {
             });
           }
         } catch (error) {
-          console.log("3");
           console.error("Error deleting chapter:", error);
           Swal.fire({
             title: "Error",
@@ -245,6 +242,20 @@ const AboutCourse = ({ courseId }) => {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const calculateAverageRating = (review) => {
+    if (!review || review.length === 0) {
+      return 0;
+    }
+
+    const totalRating = review.reduce(
+      (sum, reviewItem) => sum + reviewItem.rating,
+      0
+    );
+    const averageRating = totalRating / review.length;
+
+    return averageRating;
   };
 
   return (
@@ -320,11 +331,78 @@ const AboutCourse = ({ courseId }) => {
               {courseDetails.blurb}
             </span>
           </div>
-
           <div className="p-3 mx-5 w-2/3">
             <span className="font-bold text-lg">Description:{` `} </span>
             <div className="text-justify">{courseDetails.description}</div>
           </div>
+          <div className="p-3 mx-5 w-2/3">
+            <span className="font-bold text-lg">
+              Price:{` `}
+              <span className="text-base">₹{courseDetails.price}</span>
+            </span>
+          </div>
+          {/* /////////////////////Review///////////////////////////// */}
+          <div className="bg-gray-100 rounded-lg">
+            <h1 className="text-2xl font-bold p-5">Course Review:</h1>
+            <div className="w-full p-3 flex flex-col gap-2">
+              {review && (
+                <div>
+                  <div className="font-medium text-xl p-2">
+                    Rating: {calculateAverageRating(review)}
+                  </div>
+                  <Rating
+                    name="half-rating"
+                    defaultValue={calculateAverageRating(review)}
+                    precision={0.25}
+                    readOnly
+                  />
+                </div>
+              )}
+              <div>
+                <div className="font-medium pb-3 pl-1 text-lg">
+                  What People have to say:
+                </div>
+                {review.length > 0 ? (
+                  review.map((reviewItem, i) => (
+                    <article
+                      className="p-6 text-base bg-white rounded-lg mb-2"
+                      key={i}
+                    >
+                      <footer className="flex justify-between items-center mb-2">
+                        <div className="flex items-center">
+                          <p className="inline-flex items-center mr-3 text-sm text-gray-700 font-semibold">
+                            <img
+                              className="mr-2 w-6 h-6 rounded-full"
+                              src={reviewItem?.user?.profilePic?.url}
+                              alt="User Profile"
+                            />
+                            {reviewItem?.user?.name}
+                          </p>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                            <time>Feb. 8, 2022</time>
+                          </p>
+                        </div>
+                      </footer>
+                      <p className="text-gray-500 dark:text-gray-400">
+                        {reviewItem?.review}
+                      </p>
+                    </article>
+                  ))
+                ) : (
+                  <article className="p-5 text-base bg-white rounded-lg mb-3">
+                    <footer className="flex justify-between items-center mb-2">
+                      <div className="flex items-center"></div>
+                    </footer>
+                    <p className="text-orange-400 text-xl font-semibold">
+                      No reviews yet!
+                    </p>
+                  </article>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* ////////////////////////////////////////////////// */}
           {isModalVisible && (
             <div
               aria-hidden="true"

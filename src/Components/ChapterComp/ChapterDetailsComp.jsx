@@ -14,7 +14,6 @@ const ChapterDetailsComp = ({ chapterId }) => {
           params: { chapterId },
         });
         setChapterDetails(response.data.chapterDetails);
-        console.log(response.data.chapterDetails);
       } catch (error) {
         console.error("error fetching chapter details", error);
       }

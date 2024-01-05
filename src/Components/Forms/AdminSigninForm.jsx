@@ -50,13 +50,13 @@ const SignIn = () => {
     e.preventDefault();
     try {
       const data = await sendRequest();
-      console.log("data: ", data.user);
       toast.success("Successfully Logged In");
       setTimeout(() => {
         dispatch(
           userLogin({
             role: Number(data.user.role),
             email: data.user.email,
+            token: data.accessToken
           })
         );
         navigate("/admin/dashboard");
