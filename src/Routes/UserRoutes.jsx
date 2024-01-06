@@ -14,6 +14,7 @@ import ForgotPassword from "../Pages/Otp/ForgotPassword";
 import ChangePassword from "../Pages/Profile/ChangePassword";
 import DisplayBlog from "../Pages/Blog/DisplayBlog";
 import DisplayBlogDetails from "../Pages/Blog/DisplayBlogDetails";
+import UserSideChat from "../Pages/Chats/UserSideChat";
 
 const AuthRoutes = () => {
   return (
@@ -113,6 +114,14 @@ const AuthRoutes = () => {
           element={
             <ProtectedUserRoutes>
               <ChapterDetailsUserSide />
+            </ProtectedUserRoutes>
+          }
+        />
+        <Route
+          path="/user/chat"
+          element={
+            <ProtectedUserRoutes>
+              <UserSideChat />
             </ProtectedUserRoutes>
           }
         />

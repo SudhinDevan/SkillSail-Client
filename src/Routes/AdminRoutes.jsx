@@ -70,7 +70,7 @@ const AdminRoutes = () => {
             </AdminAuthRoute>
           }
         />
-        {/* <Route path="*" element={<Error />} /> */}
+        {/* <Route path="*" element={<Error />} exact /> */}
       </Routes>
     </>
   );

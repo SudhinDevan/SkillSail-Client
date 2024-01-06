@@ -82,6 +82,14 @@ const UserNavbar = () => {
             </span>
             <span
               className={`cursor-pointer hover:text-orange-400 transition-all duration-300 ${
+                location.pathname === "/user/chat" ? "text-orange-400" : ""
+              }`}
+              onClick={() => navigate("/user/chat")}
+            >
+              CHATS
+            </span>
+            <span
+              className={`cursor-pointer hover:text-orange-400 transition-all duration-300 ${
                 location.pathname === "/profile" ? "text-orange-400" : ""
               }`}
               onClick={() => navigate("/profile")}

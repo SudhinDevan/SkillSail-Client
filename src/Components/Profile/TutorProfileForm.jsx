@@ -19,6 +19,7 @@ const UserProfileForm = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [image, setImage] = useState(null);
   const [isHovered, setIsHovered] = useState(false);
+  const [courses, setCourses] = useState(null);
   const [inputs, setInputs] = useState({
     name: "",
     phone: "",
@@ -31,6 +32,8 @@ const UserProfileForm = () => {
         const response = await axiosPrivate.get("/tutor/profileDetails", {
           params: { email },
         });
+        console.log("hello", response.data);
+        setCourses(response.data.course);
         setImage(response.data.user.profilePic.url);
       } catch (err) {
         console.error(err);
@@ -213,13 +216,16 @@ const UserProfileForm = () => {
             </div>
             <div className="bg-white h-1/2 rounded-md">
               <div className="h-2/3 flex flex-col justify-center gap-2 pl-5">
-                <div className="font-bold text-2xl">Purchased Courses:</div>
-                <div className="text-sm w-3/4">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat.
-                </div>
+                <div className="font-bold text-2xl pb-2">Uploaded Courses:</div>
+                {courses?.length > 0 ? (
+                  courses.map((course, i) => (
+                    <div key={i + 1} className="text-base w-3/4 font-semibold cursor-pointer">
+                      {i + 1}.{course?.courseName}
+                    </div>
+                  ))
+                ) : (
+                  <h1>No courses uploaded</h1>
+                )}
               </div>
             </div>
           </div>

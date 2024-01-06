@@ -48,7 +48,7 @@ const DashboardCardSection = ({ data }) => {
             : () => navigate("/admin/transactions")
         }
         text="Total revenue"
-        value={data ? `₹ ${data?.totalRevenue}` : "loading..."}
+        value={data ? `₹ ${Math.floor(data?.totalRevenue * 0.9)}` : "loading..."}
         Icon={<GoTrophy color="white" className="text-xl md:text-veryLarge" />}
       />
     </div>
