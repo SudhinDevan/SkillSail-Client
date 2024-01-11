@@ -43,6 +43,7 @@ const ChatUi = ({ recipientId, recipient }) => {
       recipientId,
       senderSocketId: socket.id,
       token: authState.token,
+      userId: authState.id
     });
 
     setTextMessage("");

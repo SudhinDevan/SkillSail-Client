@@ -9,18 +9,21 @@ const StudentListingTeacherSide = () => {
   const axiosPrivate = UseAxiosPrivate();
   const [searchItem, setSearchItem] = useState("");
   const [students, setStudents] = useState(null);
-  const [filteredUsers, setFilteredUsers] = useState(null);
+  // const [filteredUsers, setFilteredUsers] = useState(null);
   const { id } = useSelector((state) => state.user);
-  
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(null);
 
   const fetchData = async () => {
     try {
       const response = await axiosPrivate.post("/tutor/studentListing", {
         id,
+        currentPage,
       });
-      console.log("useeffect", response.data.studentsWithCourses);
-      setStudents(response.data.studentsWithCourses);
-      setFilteredUsers(response.data.studentsWithCourses);
+      console.log("useeffect", response.data.totalCount);
+      setTotalCount(response.data.totalCount);
+      setStudents(response.data.tutorCourses);
+      // setFilteredUsers(response.data.tutorCourses);
     } catch (error) {
       console.log(error);
     }
@@ -34,7 +37,7 @@ const StudentListingTeacherSide = () => {
         });
         console.log("sudhin", response.data.studentsWithCourses);
         setStudents(response.data.studentsWithCourses);
-        setFilteredUsers(response.data.studentsWithCourses);
+        // setFilteredUsers(response.data.studentsWithCourses);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -50,13 +53,12 @@ const StudentListingTeacherSide = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [currentPage]);
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const postPerPage = 2;
-  const lastPostIndex = currentPage * postPerPage;
-  const firstPostIndex = lastPostIndex - postPerPage;
-  const currentPosts = filteredUsers?.slice(firstPostIndex, lastPostIndex);
+  const postPerPage = 3;
+  // const lastPostIndex = currentPage * postPerPage;
+  // const firstPostIndex = lastPostIndex - postPerPage;
+  // const currentPosts = filteredUsers?.slice(firstPostIndex, lastPostIndex);
 
   return (
     <>
@@ -91,8 +93,8 @@ const StudentListingTeacherSide = () => {
           </div>
         </div>
         {/* ///////////////////////////// */}
-        {currentPosts ? (
-          currentPosts.length > 0 ? (
+        {students ? (
+          students.length > 0 ? (
             <table className="min-w-full divide-y divide-gray-200">
               <thead>
                 <tr>
@@ -114,7 +116,7 @@ const StudentListingTeacherSide = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {currentPosts.map((user, i) => (
+                {students.map((user, i) => (
                   <tr key={i}>
                     <td className="px-6 py-4 text-center whitespace-no-wrap font-semibold">
                       {i + 1 + currentPage * postPerPage - postPerPage}
@@ -155,7 +157,7 @@ const StudentListingTeacherSide = () => {
         )}
         <div className="text-center justify-center p-5">
           <Pagination
-            totalPosts={filteredUsers?.length}
+            totalPosts={totalCount}
             postsPerPage={postPerPage}
             setCurrentPage={setCurrentPage}
             currentPage={currentPage}
