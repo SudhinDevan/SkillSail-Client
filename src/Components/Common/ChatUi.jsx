@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 
 import useAxiosPrivate from "../../Hooks/UseAxiosPrivate";
 
-const socket = io("http://localhost:3000");
+const socket = io("https://skillsail.sudhindevan.com/");
 
 const ChatUi = ({ recipientId, recipient }) => {
   const axiosPrivate = useAxiosPrivate();
