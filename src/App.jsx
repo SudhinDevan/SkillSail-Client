@@ -5,6 +5,7 @@ import TutorRoutes from "./Routes/TutorRoutes";
 import UserRoutes from "./Routes/UserRoutes";
 import Layouts from "./Utils/Layout";
 import Error from "./Pages/Error/Error";
+import PublicRoutes from "./Routes/PublicRoutes";
 import Home from "./Pages/Home/Home";
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Layouts />}>
           <Route path="/" element={<Home />} exact />
+          <Route path="/*" element={<PublicRoutes />} />
           <Route path="/user/*" element={<UserRoutes />} />
           <Route path="/tutor/*" element={<TutorRoutes />} />
           <Route path="/admin/*" element={<AdminRoutes />} />

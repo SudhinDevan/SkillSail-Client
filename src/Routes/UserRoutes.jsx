@@ -10,8 +10,8 @@ import DisplayCourses from "../Pages/DisplayCourses/DisplayCourses";
 import DisplayCourseDetails from "../Pages/CourseDetails/DisplayCourseDetails";
 import ChapterDetailsUserSide from "../Pages/Chapter/chapterDetailsUserSide";
 import MyLearning from "../Pages/MyLearning/MyLearning";
-import ForgotPassword from "../Pages/Otp/ForgotPassword";
-import ChangePassword from "../Pages/Profile/ChangePassword";
+// import ForgotPassword from "../Pages/Otp/ForgotPassword";
+// import ChangePassword from "../Pages/Profile/ChangePassword";
 import DisplayBlog from "../Pages/Blog/DisplayBlog";
 import DisplayBlogDetails from "../Pages/Blog/DisplayBlogDetails";
 import UserSideChat from "../Pages/Chats/UserSideChat";
@@ -47,7 +47,7 @@ const AuthRoutes = () => {
             </ProtectedAuthRoutes>
           }
         />
-        <Route
+        {/* <Route
           path="/forgotPassword"
           element={
             <ProtectedAuthRoutes>
@@ -62,7 +62,7 @@ const AuthRoutes = () => {
               <ChangePassword />
             </ProtectedAuthRoutes>
           }
-        />
+        /> */}
         <Route
           path="/profile"
           element={
