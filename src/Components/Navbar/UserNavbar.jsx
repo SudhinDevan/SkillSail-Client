@@ -27,15 +27,7 @@ const UserNavbar = () => {
   const handleLogout = async () => {
     try {
       logout();
-
-      // const res = await axios.get("/logout");
-      // if (res.status === 200) {
-      //   toast.success("Successfully logged out!");
-      //   dispatch(userLogout());
-      //   navigate("/");
-      // }
     } catch (error) {
-      // Handle errors from the request (optional)
       toast.error(error);
     }
   };
@@ -57,26 +49,28 @@ const UserNavbar = () => {
               HOME
             </span>
             <span
-              onClick={() => navigate("/courses")}
+              onClick={() => navigate("/user/courses")}
               className={`cursor-pointer hover:text-orange-400 transition-all duration-300 ${
-                location.pathname === "/courses" ? "text-orange-400" : ""
+                location.pathname === "/user/courses" ? "text-orange-400" : ""
               }`}
             >
               ALL COURSES
             </span>
             <span
-              onClick={() => navigate("/myLearning")}
+              onClick={() => navigate("/user/myLearning")}
               className={`cursor-pointer hover:text-orange-400 transition-all duration-300 ${
-                location.pathname === "/myLearning" ? "text-orange-400" : ""
+                location.pathname === "/user/myLearning"
+                  ? "text-orange-400"
+                  : ""
               }`}
             >
               MY LEARNING
             </span>
             <span
               className={`cursor-pointer hover:text-orange-400 transition-all duration-300 ${
-                location.pathname === "/blog" ? "text-orange-400" : ""
+                location.pathname === "/user/blog" ? "text-orange-400" : ""
               }`}
-              onClick={() => navigate("/blog")}
+              onClick={() => navigate("/user/blog")}
             >
               BLOG
             </span>
@@ -90,11 +84,21 @@ const UserNavbar = () => {
             </span>
             <span
               className={`cursor-pointer hover:text-orange-400 transition-all duration-300 ${
-                location.pathname === "/profile" ? "text-orange-400" : ""
+                location.pathname === "/user/profile" ? "text-orange-400" : ""
               }`}
-              onClick={() => navigate("/profile")}
+              onClick={() => navigate("/user/profile")}
             >
               PROFILE
+            </span>
+            <span
+              className={`cursor-pointer hover:text-orange-400 transition-all duration-300 ${
+                location.pathname === "/user/transactions"
+                  ? "text-orange-400"
+                  : ""
+              }`}
+              onClick={() => navigate("/user/transactions")}
+            >
+              TRANSACTIONS
             </span>
           </ul>
         </div>
@@ -103,13 +107,13 @@ const UserNavbar = () => {
             <>
               <button
                 className="border-black border p-2 cursor-pointer hover:bg-black hover:text-white"
-                onClick={() => navigate("/login")}
+                onClick={() => navigate("/user/login")}
               >
                 LOGIN
               </button>
               <button
                 className="p-2 border border-black cursor-pointer hover:bg-black hover:text-white"
-                onClick={() => navigate("/signup")}
+                onClick={() => navigate("/user/signup")}
               >
                 SIGNUP
               </button>
@@ -138,20 +142,20 @@ const UserNavbar = () => {
             <li className="p-3">ALL COURSES</li>
             <li className="p-3">MY LEARNING</li>
             <li className="p-3">BLOG</li>
-            <li className="p-3" onClick={() => navigate("/profile")}>
+            <li className="p-3" onClick={() => navigate("/user/profile")}>
               PROFILE
             </li>
             {!role === 2000 ? (
               <>
-                <li className="p-3" onClick={() => navigate("/login")}>
+                <li className="p-3" onClick={() => navigate("/user/login")}>
                   LOGIN
                 </li>
-                <li className="p-3" onClick={() => navigate("/signup")}>
+                <li className="p-3" onClick={() => navigate("/user/signup")}>
                   SIGNUP
                 </li>
               </>
             ) : (
-              <li className="p-3" onClick={() => navigate("/login")}>
+              <li className="p-3" onClick={() => navigate("/user/login")}>
                 LOGOUT
               </li>
             )}

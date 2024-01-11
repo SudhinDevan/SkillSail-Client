@@ -54,7 +54,7 @@ const OtpVerify = () => {
       } else if (res.status === 201) {
         toast.error("Incorrect OTP");
         setTimeout(() => {
-          navigate("/login");
+          navigate("/user/login");
         }, 3000);
       }
     } catch (error) {

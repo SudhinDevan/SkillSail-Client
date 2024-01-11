@@ -12,7 +12,7 @@ const useLogout = () => {
     try {
       await axios.get("/logout");
       dispatch(userLogout());
-      navigate("/login");
+      navigate("/user/login");
     } catch (error) {
       console.error("Error during logout", error);
     }

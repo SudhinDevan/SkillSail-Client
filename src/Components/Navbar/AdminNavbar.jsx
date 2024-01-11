@@ -133,10 +133,10 @@ const AdminNavbar = () => {
                 <li className="p-3">TEACHER REQUEST</li>
                 <li className="p-3">ALL COURSES</li>
                 <li className="p-3">TRANSACTIONS</li>
-                <li className="p-3" onClick={() => navigate("/profile")}>
+                <li className="p-3" onClick={() => navigate("/user/profile")}>
                   PROFILE
                 </li>
-                <li className="p-3" onClick={() => navigate("/login")}>
+                <li className="p-3" onClick={() => navigate("/user/login")}>
                   LOGOUT
                 </li>
               </ul>
@@ -172,10 +172,10 @@ const AdminNavbar = () => {
                 <li className="p-3">COURSE</li>
                 <li className="p-3">MY LEARNING</li>
                 <li className="p-3">BLOG</li>
-                <li className="p-3" onClick={() => navigate("/profile")}>
+                <li className="p-3">
                   PROFILE
                 </li>
-                <li className="p-3" onClick={() => navigate("/login")}>
+                <li className="p-3">
                   LOGOUT
                 </li>
               </ul>

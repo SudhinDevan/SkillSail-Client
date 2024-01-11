@@ -8,14 +8,14 @@ import TeacherApprovalListing from "../Pages/Listing/TeacherApprovalListing";
 import TeacherListing from "../Pages/Listing/TeacherListing";
 import AdminCourseSection from "../Pages/Course/AdminCourseSection";
 import TransactionHistory from "../Pages/Transactions/TransactionHistory";
-// import Error from "../Pages/Error/Error";
+import Error from "../Pages/Error/Error";
 
 const AdminRoutes = () => {
   return (
     <>
       <Routes>
         <Route
-          path="/admin/login"
+          path="/login"
           element={
             <ProtectedAdminRoutes>
               <AdminSignin />
@@ -23,7 +23,7 @@ const AdminRoutes = () => {
           }
         />
         <Route
-          path="/admin/dashboard"
+          path="/dashboard"
           element={
             <AdminAuthRoute>
               <AdminDashboard />
@@ -31,7 +31,7 @@ const AdminRoutes = () => {
           }
         />
         <Route
-          path="/admin/users"
+          path="/users"
           element={
             <AdminAuthRoute>
               <UserListing />
@@ -39,7 +39,7 @@ const AdminRoutes = () => {
           }
         />
         <Route
-          path="/admin/teacherRequest"
+          path="/teacherRequest"
           element={
             <AdminAuthRoute>
               <TeacherApprovalListing />
@@ -47,7 +47,7 @@ const AdminRoutes = () => {
           }
         />
         <Route
-          path="/admin/teachers"
+          path="/teachers"
           element={
             <AdminAuthRoute>
               <TeacherListing />
@@ -55,7 +55,7 @@ const AdminRoutes = () => {
           }
         />
         <Route
-          path="/admin/courses"
+          path="/courses"
           element={
             <AdminAuthRoute>
               <AdminCourseSection />
@@ -63,14 +63,14 @@ const AdminRoutes = () => {
           }
         />
         <Route
-          path="/admin/transactions"
+          path="/transactions"
           element={
             <AdminAuthRoute>
               <TransactionHistory />
             </AdminAuthRoute>
           }
         />
-        {/* <Route path="*" element={<Error />} exact /> */}
+        <Route path="*" element={<Error />} />
       </Routes>
     </>
   );

@@ -35,7 +35,7 @@ const PurchasedCourses = () => {
                 courses.map((course) => (
                   <div
                     key={course._id}
-                    onClick={() => navigate(`/courses/${course._id}`)}
+                    onClick={() => navigate(`/user/courses/${course._id}`)}
                     className="p-4 h-44 border-2 mr-10 mt-4 mb-3 w-full rounded shadow-md cursor-pointer flex bg-white hover:bg-gray-100"
                   >
                     <img

@@ -7,8 +7,8 @@ const ProtectedUserRoutes = ({ children }) => {
 
   const location = useLocation();
 
-  return !state.role ? (
-    <Navigate to="/login" state={{ from: location.pathname }} replace />
+  return !(state.role === 2000) ? (
+    <Navigate to="/user/login" state={{ from: location.pathname }} replace />
   ) : (
     children
   );

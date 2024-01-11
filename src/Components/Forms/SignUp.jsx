@@ -143,7 +143,7 @@ const SignUp = () => {
             duration: 1500,
           });
           setTimeout(() => {
-            navigate("/login");
+            navigate("/user/login");
           }, 1500);
         } else {
           // showErrorToast("Cannot Register User");

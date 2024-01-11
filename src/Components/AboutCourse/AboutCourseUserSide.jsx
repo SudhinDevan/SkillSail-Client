@@ -98,7 +98,7 @@ const AboutCourseUserSide = ({ courseId }) => {
               timer: 2500,
             });
             setTimeout(() => {
-              navigate("/myLearning");
+              navigate("/user/myLearning");
             }, 2500);
           }
         } catch (error) {
@@ -143,7 +143,6 @@ const AboutCourseUserSide = ({ courseId }) => {
       });
   };
 
-  console.log("djfkdjfdk", reviews);
   return (
     <>
       {courses ? (
@@ -163,7 +162,7 @@ const AboutCourseUserSide = ({ courseId }) => {
                     type="button"
                     onClick={() => {
                       if (purchasedUser) {
-                        navigate(`/chapterDetails/${chapter._id}`);
+                        navigate(`/user/chapterDetails/${chapter._id}`);
                       }
                     }}
                   >

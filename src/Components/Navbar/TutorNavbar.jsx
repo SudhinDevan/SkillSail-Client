@@ -3,16 +3,13 @@ import { MdMenu } from "react-icons/md";
 import { useSelector } from "react-redux";
 import Logo from "../HelperComponents/Logo";
 import { useState } from "react";
-// import UseAxiosPrivate from "../../Hooks/UseAxiosPrivate";
 import toast, { Toaster } from "react-hot-toast";
-// import { userLogout } from "../../Redux/userSlice";
 import useLogout from "../../Hooks/UseLogout";
 import { useLocation } from "react-router-dom";
 
 const TutorNavbar = () => {
   const location = useLocation();
   const logout = useLogout();
-  // const AxiosInstance = UseAxiosPrivate();
   const [toggle, setToggle] = useState(true);
   const navigate = useNavigate();
 
@@ -88,13 +85,13 @@ const TutorNavbar = () => {
                   STUDENTS
                 </span>
                 <span
-                 className={`cursor-pointer hover:text-orange-400 transition-all duration-300 ${
-                  location.pathname === "/tutor/chat"
-                    ? "text-orange-400"
-                    : ""
-                }`}
-                onClick={() => navigate("/tutor/chat")}
-                >CHATS</span>
+                  className={`cursor-pointer hover:text-orange-400 transition-all duration-300 ${
+                    location.pathname === "/tutor/chat" ? "text-orange-400" : ""
+                  }`}
+                  onClick={() => navigate("/tutor/chat")}
+                >
+                  CHATS
+                </span>
                 <span
                   className={`cursor-pointer hover:text-orange-400 transition-all duration-300 ${
                     location.pathname === "/tutor/blog" ? "text-orange-400" : ""
@@ -139,10 +136,10 @@ const TutorNavbar = () => {
                 <li className="p-3">COURSES</li>
                 <li className="p-3">CHATS</li>
                 <li className="p-3">BLOGS</li>
-                <li className="p-3" onClick={() => navigate("/profile")}>
+                <li className="p-3">
                   PROFILE
                 </li>
-                <li className="p-3" onClick={() => navigate("/login")}>
+                <li className="p-3">
                   LOGOUT
                 </li>
               </ul>
@@ -181,7 +178,7 @@ const TutorNavbar = () => {
                 <li className="p-3" onClick={() => navigate("/tutor/profile")}>
                   PROFILE
                 </li>
-                <li className="p-3" onClick={() => navigate("/login")}>
+                <li className="p-3" onClick={() => navigate("/user/login")}>
                   LOGOUT
                 </li>
               </ul>

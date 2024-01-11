@@ -7,7 +7,7 @@ const ProtectedAuthRoutes = ({ children }) => {
 
   const location = useLocation();
 
-  return state.role === 2000 ? (
+  return (state?.role === 2000) ? (
     <Navigate to="/" state={{ from: location.pathname }} replace />
   ) : (
     children

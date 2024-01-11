@@ -82,7 +82,7 @@ const ShowBlog = () => {
                   <div
                     key={blog._id}
                     className="p-4 cursor-pointer h-40 border-2 mr-10 mt-4 mb-3 w-full flex rounded shadow-md items-center bg-white hover:bg-gray-100"
-                    onClick={() => navigate(`/blog/${blog._id}`)}
+                    onClick={() => navigate(`/user/blog/${blog._id}`)}
                   >
                     <img
                       src={blog?.thumbnail.url}

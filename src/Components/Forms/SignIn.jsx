@@ -53,7 +53,7 @@ const SignIn = () => {
       toastId = toast.error(err.response.data.message);
       setTimeout(() => {
         toast.remove(toastId);
-        navigate("/login");
+        navigate("/user/login");
       }, 3000);
     }
   };

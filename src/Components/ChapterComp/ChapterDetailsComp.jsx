@@ -2,8 +2,10 @@ import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import UseAxiosPrivate from "../../Hooks/UseAxiosPrivate";
 import SyncLoader from "react-spinners/SyncLoader";
+import { useNavigate } from "react-router-dom";
 
 const ChapterDetailsComp = ({ chapterId }) => {
+  const navigate = useNavigate();
   const AxiosInstance = UseAxiosPrivate();
   const [chapterDetails, setChapterDetails] = useState(null);
 
@@ -15,6 +17,7 @@ const ChapterDetailsComp = ({ chapterId }) => {
         });
         setChapterDetails(response.data.chapterDetails);
       } catch (error) {
+        navigate("/*");
         console.error("error fetching chapter details", error);
       }
     };

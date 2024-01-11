@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
 const Pagination = ({
   totalPosts,
@@ -53,8 +53,8 @@ const Pagination = ({
 export default Pagination;
 
 Pagination.propTypes = {
-    totalPosts: PropTypes.number.isRequired,
-    postsPerPage: PropTypes.number.isRequired,
-    setCurrentPage: PropTypes.func.isRequired,
-    currentPage: PropTypes.number.isRequired,
-  };
+  totalPosts: PropTypes.number.isRequired,
+  postsPerPage: PropTypes.number.isRequired,
+  setCurrentPage: PropTypes.func.isRequired,
+  currentPage: PropTypes.number.isRequired,
+};

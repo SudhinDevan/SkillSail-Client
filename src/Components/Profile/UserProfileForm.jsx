@@ -203,7 +203,7 @@ const UserProfileForm = () => {
                   {appliedCourses &&
                     appliedCourses.map((course, index) => (
                       <div
-                        onClick={() => navigate(`/courses/${course._id}`)}
+                        onClick={() => navigate(`/user/courses/${course._id}`)}
                         className="text-sm w-3/4 font-semibold hover:text-blue-500 cursor-pointer"
                         key={course._id}
                       >

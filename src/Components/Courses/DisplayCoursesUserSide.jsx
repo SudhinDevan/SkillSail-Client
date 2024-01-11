@@ -32,7 +32,7 @@ const DisplayCoursesUserSide = () => {
               {courses?.data?.courses?.map((course) => (
                 <div
                   key={course._id}
-                  onClick={() => navigate(`/courses/${course._id}`)}
+                  onClick={() => navigate(`/user/courses/${course._id}`)}
                   className="p-4 h-60 border-2 mr-10 mt-4 mb-3 w-80 rounded shadow-md cursor-pointer flex flex-col items-center justify-center bg-white hover:bg-gray-100"
                 >
                   <img

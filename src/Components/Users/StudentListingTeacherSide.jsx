@@ -1,25 +1,24 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import UseAxiosPrivate from "../../Hooks/UseAxiosPrivate";
 import { useSelector } from "react-redux";
 import SyncLoader from "react-spinners/SyncLoader";
 import Pagination from "../Utilities/Pagination";
+import { debounce } from "lodash";
 
 const StudentListingTeacherSide = () => {
   const axiosPrivate = UseAxiosPrivate();
-  const [search, setSearch] = useState("");
+  const [searchItem, setSearchItem] = useState("");
   const [students, setStudents] = useState(null);
   const [filteredUsers, setFilteredUsers] = useState(null);
   const { id } = useSelector((state) => state.user);
-
-  useEffect(() => {
-    fetchData();
-  }, []);
+  
 
   const fetchData = async () => {
     try {
       const response = await axiosPrivate.post("/tutor/studentListing", {
         id,
       });
+      console.log("useeffect", response.data.studentsWithCourses);
       setStudents(response.data.studentsWithCourses);
       setFilteredUsers(response.data.studentsWithCourses);
     } catch (error) {
@@ -27,16 +26,31 @@ const StudentListingTeacherSide = () => {
     }
   };
 
-  const filterUserFunction = (val) => {
-    setSearch(val);
-    const filteredList = students?.filter((item) => {
-      return val.toLowerCase() === ""
-        ? item
-        : item.student.email.toLowerCase().includes(val);
-    });
+  const handleSearch = useCallback(
+    debounce(async (searchItem) => {
+      try {
+        const response = await axiosPrivate.get("/tutor/test", {
+          params: { searchItem: searchItem, id: id },
+        });
+        console.log("sudhin", response.data.studentsWithCourses);
+        setStudents(response.data.studentsWithCourses);
+        setFilteredUsers(response.data.studentsWithCourses);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }, 500),
+    [id]
+  );
 
-    setFilteredUsers(filteredList);
+  const handleChange = (event) => {
+    const { value } = event.target;
+    setSearchItem(value);
+    handleSearch(value);
   };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const [currentPage, setCurrentPage] = useState(1);
   const postPerPage = 2;
@@ -66,12 +80,12 @@ const StudentListingTeacherSide = () => {
                 />
               </svg>
             </div>
-
             <input
               className="peer h-full w-full outline-none text-sm pl-3 text-gray-700 pr-2 placeholder:pl-5"
               type="text"
               id="search"
-              onChange={(e) => filterUserFunction(e.target.value)}
+              value={searchItem}
+              onChange={handleChange}
               placeholder="Search Email..."
             />
           </div>
@@ -125,7 +139,7 @@ const StudentListingTeacherSide = () => {
             <div className="text-center items-center">
               <h1 className="text-2xl p-5">
                 No transactions found for the Search Keyword{" "}
-                <span className="text-blue-400">&#39;{search}&#39;</span>
+                <span className="text-blue-400">&#39;{searchItem}&#39;</span>
               </h1>
             </div>
           )

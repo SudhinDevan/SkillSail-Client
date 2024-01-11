@@ -9,24 +9,18 @@ import StudentListing from "../Pages/Listing/StudentListing";
 import PublicCourses from "../Pages/Course/PublicCourse";
 import Blog from "../Pages/Blog/Blog";
 import BlogDetails from "../Pages/Blog/BlogDetails";
-import TutorSideChat from "../Pages/Chats/TutorSideChat";
 import Error from "../Pages/Error/Error";
+import TutorSideChat from "../Pages/Chats/TutorSideChat";
 const LazyRunningCourse = React.lazy(() =>
   import("../Pages/Course/RunningCourse")
 );
 
-const knownRoutes = ["TutorDashboard"];
-
 const TutorRoutes = () => {
-  const isUnknownRoutes = knownRoutes.find((route) =>
-    window.location.href.includes(route)
-  );
-
   return (
     <>
       <Routes>
         <Route
-          path="/tutor/dashboard"
+          path="/dashboard"
           element={
             <ProtectedTutorRoute>
               <TutorDashboard />
@@ -34,7 +28,7 @@ const TutorRoutes = () => {
           }
         />
         <Route
-          path="/tutor/profile"
+          path="/profile"
           element={
             <ProtectedTutorRoute>
               <TutorProfile />
@@ -42,7 +36,7 @@ const TutorRoutes = () => {
           }
         />
         <Route
-          path="/tutor/runningCourse"
+          path="/runningCourse"
           element={
             <ProtectedTutorRoute>
               <React.Suspense fallback="Loading...">
@@ -52,7 +46,7 @@ const TutorRoutes = () => {
           }
         />
         <Route
-          path="/tutor/publicCourses"
+          path="/publicCourses"
           element={
             <ProtectedTutorRoute>
               <PublicCourses />
@@ -60,7 +54,7 @@ const TutorRoutes = () => {
           }
         />
         <Route
-          path="/tutor/courseDetails/:courseId"
+          path="/courseDetails/:courseId"
           element={
             <ProtectedTutorRoute>
               <CourseDetails />
@@ -68,7 +62,7 @@ const TutorRoutes = () => {
           }
         />
         <Route
-          path="/tutor/blogDetails/:blogId"
+          path="/blogDetails/:blogId"
           element={
             <ProtectedTutorRoute>
               <BlogDetails />
@@ -76,7 +70,7 @@ const TutorRoutes = () => {
           }
         />
         <Route
-          path="/tutor/chapterDetails/:chapterId"
+          path="/chapterDetails/:chapterId"
           element={
             <ProtectedTutorRoute>
               <ChapterDetails />
@@ -84,7 +78,7 @@ const TutorRoutes = () => {
           }
         />
         <Route
-          path="/tutor/students"
+          path="/students"
           element={
             <ProtectedTutorRoute>
               <StudentListing />
@@ -92,7 +86,7 @@ const TutorRoutes = () => {
           }
         />
         <Route
-          path="/tutor/blog"
+          path="/blog"
           element={
             <ProtectedTutorRoute>
               <Blog />
@@ -100,14 +94,14 @@ const TutorRoutes = () => {
           }
         />
         <Route
-          path="/tutor/chat"
+          path="/chat"
           element={
             <ProtectedTutorRoute>
               <TutorSideChat />
             </ProtectedTutorRoute>
           }
         />
-        {!isUnknownRoutes && <Route path="*" element={<Error />} />}
+        <Route path="/*" element={<Error />} />
       </Routes>
     </>
   );

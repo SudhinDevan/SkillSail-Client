@@ -7,7 +7,7 @@ const ProtectedTutorRoute = ({ children }) => {
 
   const location = useLocation();
   return !(state.role === 3000) ? (
-    <Navigate to="/login" state={{ from: location.pathname }} replace />
+    <Navigate to="/user/login" state={{ from: location.pathname }} replace />
   ) : (
     children
   );

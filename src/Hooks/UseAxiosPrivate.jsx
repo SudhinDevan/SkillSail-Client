@@ -29,6 +29,7 @@ const UseAxiosPrivate = () => {
         }
 
         if (error?.response?.status === 403 && !prevRequest?.sent) {
+          console.log("sdfa");
           prevRequest.sent = true;
           const newAccessToken = await refresh();
           prevRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;

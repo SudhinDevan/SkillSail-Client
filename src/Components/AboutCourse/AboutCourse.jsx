@@ -42,12 +42,13 @@ const AboutCourse = ({ courseId }) => {
         const response = await AxiosInstance.get("/tutor/courseDetails", {
           params: { courseId },
         });
-        console.log(response.data.courseData.reviews);
+        console.log(response);
         setReview(response.data.courseData.reviews);
         setCourseDetails(response.data.courseData);
         setIsChecked(response.data.courseData.isCompleted);
       } catch (error) {
-        console.error("Error fetching course details:", error);
+        navigate("/*");
+        console.error("something went wrong", error);
       }
     };
 
@@ -58,7 +59,6 @@ const AboutCourse = ({ courseId }) => {
         const response = await AxiosInstance.get("/tutor/chapterListing", {
           params: { courseId },
         });
-
         setChapterDetails(response.data.chapterData);
       } catch (error) {
         console.error("error fetching chapter details", error);

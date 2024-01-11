@@ -15,6 +15,8 @@ import ChangePassword from "../Pages/Profile/ChangePassword";
 import DisplayBlog from "../Pages/Blog/DisplayBlog";
 import DisplayBlogDetails from "../Pages/Blog/DisplayBlogDetails";
 import UserSideChat from "../Pages/Chats/UserSideChat";
+import Error from "../Pages/Error/Error";
+import TransactionUserSide from "../Pages/Transactions/TransactionUserSide";
 
 const AuthRoutes = () => {
   return (
@@ -118,13 +120,22 @@ const AuthRoutes = () => {
           }
         />
         <Route
-          path="/user/chat"
+          path="/chat"
           element={
             <ProtectedUserRoutes>
               <UserSideChat />
             </ProtectedUserRoutes>
           }
         />
+        <Route
+          path="/transactions"
+          element={
+            <ProtectedUserRoutes>
+              <TransactionUserSide />
+            </ProtectedUserRoutes>
+          }
+        />
+        <Route path="/*" element={<Error />} />
       </Routes>
     </>
   );

@@ -22,7 +22,7 @@ const UserHome = () => {
 
   const blogDetails = (id) => {
     if (role === 2000) {
-      navigate(`/blog/${id}`);
+      navigate(`/user/blog/${id}`);
     }
     if (!role) {
       Swal.fire({
@@ -35,7 +35,7 @@ const UserHome = () => {
         confirmButtonText: "Login",
       }).then((result) => {
         if (result.isConfirmed) {
-          navigate("/login");
+          navigate("/user/login");
         }
       });
     }

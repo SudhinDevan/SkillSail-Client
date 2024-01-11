@@ -44,7 +44,7 @@ const ChangePassword = () => {
     await Axios.post("/changePassword", inputs);
     toast.success("Password Changed Successfully");
     setTimeout(() => {
-      navigate("/");
+      navigate("/user/");
     }, 2500);
   };
 
