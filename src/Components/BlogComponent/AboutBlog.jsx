@@ -130,7 +130,10 @@ const AboutBlog = ({ blogId }) => {
               {new Date(blogDetails?.createdAt).toLocaleDateString("en-GB")}
             </h1>
           </div>
-          <img src={blogDetails?.thumbnail?.url} className="mx-auto md:w-1/2 w-full p-2" />
+          <img
+            src={blogDetails?.thumbnail?.url}
+            className="mx-auto md:w-1/2 w-full p-2"
+          />
           <div className="pt-12 p-5 md:p-24 w-full text-justify">
             <span className="pt-3 text-lg">{blogDetails?.content}</span>
           </div>
@@ -188,17 +191,16 @@ const AboutBlog = ({ blogId }) => {
                         >
                           Blog Heading
                         </label>
-                        <input
-                          type="text"
+                        <textarea
                           name="heading"
                           id="heading"
                           onChange={handlechange}
                           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                          placeholder={blogDetails.blogHeading}
                           required=""
-                        />
+                        >
+                          {blogDetails.blogHeading}
+                        </textarea>
                       </div>
-
                       <div className="col-span-2">
                         <label
                           htmlFor="content"
@@ -206,15 +208,16 @@ const AboutBlog = ({ blogId }) => {
                         >
                           Content
                         </label>
-                        <input
-                          type="text"
+                        <textarea
                           name="content"
                           id="content"
                           onChange={handlechange}
-                          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                          placeholder={blogDetails.content}
+                          className="bg-gray-50 border p-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full h-36"
+                          // placeholder={blogDetails.content}
                           required=""
-                        />
+                        >
+                          {blogDetails.content}
+                        </textarea>
                       </div>
                       <div className="col-span-2">
                         <label
