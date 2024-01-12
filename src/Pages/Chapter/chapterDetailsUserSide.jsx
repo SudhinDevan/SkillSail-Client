@@ -25,7 +25,6 @@ const ChapterDetails = () => {
     }
   };
 
-  console.log("sudin", chapterId);
   return (
     <>
       <UserNavbar />

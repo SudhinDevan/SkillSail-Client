@@ -33,7 +33,6 @@ const AboutCourseUserSide = ({ courseId }) => {
         const res = await AxiosInstance.get("/user/courseDetails", {
           params: { courseId },
         });
-        console.log("res", res);
         setCourses(res.data.course);
         setChapters(res.data.chapter);
         setReviews(res.data.course.reviews);
@@ -129,8 +128,7 @@ const AboutCourseUserSide = ({ courseId }) => {
     }
 
     AxiosInstance.post("/user/courseReview", values)
-      .then((res) => {
-        console.log(res);
+      .then(() => {
         toast.success("Review added successfully");
         setFetch(true);
         setValues({

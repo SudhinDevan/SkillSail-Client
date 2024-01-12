@@ -36,7 +36,6 @@ const ChatUi = ({ recipientId, recipient }) => {
       setAllMessages([newMessage]);
     }
 
-    console.log("d", conversationId);
     socket.emit("sendMessage", {
       textMessage,
       conversationId,

@@ -14,7 +14,6 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       const response = await axiosInstance.get("/admin/dashboardData");
-      console.log(response.data);
       setData(response.data);
       setTableData(response.data.tableData);
     };

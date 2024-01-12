@@ -42,7 +42,6 @@ const AboutCourse = ({ courseId }) => {
         const response = await AxiosInstance.get("/tutor/courseDetails", {
           params: { courseId },
         });
-        console.log(response);
         setReview(response.data.courseData.reviews);
         setCourseDetails(response.data.courseData);
         setIsChecked(response.data.courseData.isCompleted);

@@ -17,11 +17,9 @@ const TransactionChartUserSide = () => {
 
   const fetchData = async () => {
     try {
-      console.log("hi");
       const res = await axiosPrivate.get("/user/transactions", {
         params: { id },
       });
-      console.log("hi", res.data.paymentHistory);
       setTransactions(res.data.paymentHistory);
       setFilterTransactionDatas(res.data.paymentHistory);
     } catch (error) {

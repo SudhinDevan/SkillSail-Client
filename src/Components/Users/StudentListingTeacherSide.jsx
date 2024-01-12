@@ -20,7 +20,7 @@ const StudentListingTeacherSide = () => {
         id,
         currentPage,
       });
-      console.log("useeffect", response.data.totalCount);
+      
       setTotalCount(response.data.totalCount);
       setStudents(response.data.tutorCourses);
       // setFilteredUsers(response.data.tutorCourses);
@@ -33,11 +33,12 @@ const StudentListingTeacherSide = () => {
     debounce(async (searchItem) => {
       try {
         const response = await axiosPrivate.get("/tutor/test", {
-          params: { searchItem: searchItem, id: id },
+          params: { searchItem: searchItem, id: id, currentPage },
         });
-        console.log("sudhin", response.data.studentsWithCourses);
-        setStudents(response.data.studentsWithCourses);
-        // setFilteredUsers(response.data.studentsWithCourses);
+       
+        setStudents(response.data.tutorCourses);
+        setTotalCount(response.data.totalCount);
+       
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -113,6 +114,9 @@ const StudentListingTeacherSide = () => {
                   <th className="px-6 py-3 bg-gray-50 text-xs text-center leading-4 font-bold text-gray-500 uppercase tracking-wider">
                     Course Price
                   </th>
+                  <th className="px-6 py-3 bg-gray-50 text-xs text-center leading-4 font-bold text-gray-500 uppercase tracking-wider">
+                    Payment Recieved from Admin
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -122,16 +126,19 @@ const StudentListingTeacherSide = () => {
                       {i + 1 + currentPage * postPerPage - postPerPage}
                     </td>
                     <td className="px-6 py-4 text-center whitespace-no-wrap font-semibold">
-                      {user.student.name}
+                      {user.user.name}
                     </td>
                     <td className="px-6 py-4 text-center whitespace-no-wrap font-semibold">
-                      {user.student.email}
+                      {user.user.email}
                     </td>
                     <td className="px-6 py-4 text-center whitespace-no-wrap font-semibold">
                       {user.course.courseName}
                     </td>
                     <td className="px-6 py-4 text-center whitespace-no-wrap font-semibold">
                       ₹{user.course.price}
+                    </td>
+                    <td className="px-6 py-4 text-center whitespace-no-wrap font-semibold">
+                      {user.paymentToTutor ? "Paid" : "Pending"}
                     </td>
                   </tr>
                 ))}
