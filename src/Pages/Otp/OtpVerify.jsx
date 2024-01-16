@@ -4,13 +4,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import { useState } from "react";
 import AxiosInstance from "../../Axios/AxiosInstance";
-import { useDispatch } from "react-redux";
-import { userLogin } from "../../Redux/userSlice";
+import Swal from "sweetalert2";
 
 const OtpVerify = () => {
   const [otpValues, setOtpValues] = useState(["", "", "", ""]);
   const location = useLocation();
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const data = location.state;
 
@@ -36,21 +34,20 @@ const OtpVerify = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const toastId = toast.loading("Validating...", { duration: 2500 });
       const res = await handleVerifyAccount();
-      toast.loading("Validating...", { duration: 2500 });
       if (res.status === 200) {
-        const { _id, name, email } = res.updateUser;
-        dispatch(
-          userLogin({
-            id: _id,
-            name,
-            email,
-          })
-        );
-        toast.success("Successfully verified!", { duration: 2500 });
+        toast.remove(toastId);
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "Successfully Verified ! Please Login",
+          showConfirmButton: false,
+          timer: 1500,
+        });
         setTimeout(() => {
           navigate("/");
-        }, 2500);
+        }, 2000);
       } else if (res.status === 201) {
         toast.error("Incorrect OTP");
         setTimeout(() => {
