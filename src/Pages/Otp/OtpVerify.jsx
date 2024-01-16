@@ -73,7 +73,7 @@ const OtpVerify = () => {
                 <p>Email Verification</p>
               </div>
               <div className="flex flex-row text-sm font-medium text-gray-400">
-                <p>We have sent a code to your email {data.email}</p>
+                <p>We have sent a code to your email {data?.email}</p>
               </div>
             </div>
 

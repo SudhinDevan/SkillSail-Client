@@ -3,7 +3,7 @@ import UserSignin from "../Pages/Signin/UserSignin";
 import UserSignup from "../Pages/Signup/UserSignup";
 import Home from "../Pages/Home/Home";
 import ProtectedAuthRoutes from "../Utils/ProtectedUserAuthRoutes";
-import OtpVerify from "../Pages/Otp/OtpVerify";
+// import OtpVerify from "../Pages/Otp/OtpVerify";
 import UserProfile from "../Pages/Profile/UserProfile";
 import ProtectedUserRoutes from "../Utils/ProtectedUserRoutes";
 import DisplayCourses from "../Pages/DisplayCourses/DisplayCourses";
@@ -39,14 +39,14 @@ const AuthRoutes = () => {
           }
         />
         <Route path="/" element={<Home />} exact />
-        <Route
+        {/* <Route
           path="/verifyOtp"
           element={
             <ProtectedAuthRoutes>
               <OtpVerify />
             </ProtectedAuthRoutes>
           }
-        />
+        /> */}
         {/* <Route
           path="/forgotPassword"
           element={
