@@ -189,7 +189,7 @@ const SignIn = () => {
                 New to SkillSail ?{" "}
                 <span
                   className="text-orange-400 font-bold cursor-pointer"
-                  onClick={() => navigate("/signup")}
+                  onClick={() => navigate("/user/signup")}
                 >
                   SignUp
                 </span>
