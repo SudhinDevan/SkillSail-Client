@@ -136,10 +136,7 @@ const TransactionChartUserSide = () => {
             </table>
           ) : (
             <div className="text-center items-center">
-              <h1 className="text-2xl p-5">
-                No transactions found for the Search Keyword{" "}
-                <span className="text-blue-400">&#39;{search}&#39;</span>
-              </h1>
+              <h1 className="text-2xl p-5">No transactions found</h1>
             </div>
           )
         ) : (
@@ -152,14 +149,18 @@ const TransactionChartUserSide = () => {
             />
           </div>
         )}
-        <div className="text-center justify-center p-5">
-          <Pagination
-            totalPosts={filterTransactionDatas?.length}
-            postsPerPage={postPerPage}
-            setCurrentPage={setCurrentPage}
-            currentPage={currentPage}
-          />
-        </div>
+        {currentPosts?.length > 0 ? (
+          <div className="text-center justify-center p-5">
+            <Pagination
+              totalPosts={filterTransactionDatas?.length}
+              postsPerPage={postPerPage}
+              setCurrentPage={setCurrentPage}
+              currentPage={currentPage}
+            />
+          </div>
+        ) : (
+          <></>
+        )}
       </div>
     </>
   );
