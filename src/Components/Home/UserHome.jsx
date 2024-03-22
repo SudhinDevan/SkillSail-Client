@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import DetailsHome from "../../Components/HelperComponents/DetailsHome";
-import SearchBar from "../../Components/HelperComponents/SearchBar";
 import AxiosInstance from "../../Axios/AxiosInstance";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -47,9 +46,6 @@ const UserHome = () => {
         <div className="mx-auto p-2 border-b-4 border-gray-200">
           <div className="flex flex-col sm:flex-row">
             <div className="w-full sm:w-1/2 h-80 flex flex-col">
-              <div className="p-3">
-                <SearchBar />
-              </div>
               <span className="font-semibold  text-lg lg:text-2xl p-5">
                 UNLOCK THE WORLD OF KNOWLEDGE WITH SKILLSAIL
               </span>
@@ -57,7 +53,10 @@ const UserHome = () => {
                 START YOUR FAVOURITE COURSE BUILD YOUR BRIGHT CAREER
               </span>
               <div className="lg:mx-2">
-                <button className="bg-teal-600 w-40 m-3 p-3 hover:bg-teal-700 text-lg rounded-lg text-white">
+                <button
+                  className="bg-teal-600 w-40 m-3 p-3 hover:bg-teal-700 text-lg rounded-lg text-white"
+                  onClick={() => navigate("/user/courses")}
+                >
                   Explore Courses
                 </button>
               </div>
@@ -94,7 +93,7 @@ const UserHome = () => {
               <span className="text-3xl p-3 font-semibold">
                 PLATFORM TO CONNECT AND BUILD YOUR CAREER
               </span>
-              <span className="text-2xl p-3">
+              <span className="text-2xl p-3 text-justify">
                 &quot;OUR PLATFORM FACILITATES DIRECT COMMUNICATION BETWEEN
                 USERS AND TUTORS. COLLABORATE, CONNECT, AND SHOWCASE YOUR
                 PROJECTS TO ENGAGE WITH STARTUPS AND TOP COMPANIES IN WEB
@@ -119,7 +118,7 @@ const UserHome = () => {
                     className="w-72 h-48"
                     alt="img"
                   />
-                  <h1 className="text-xl py-3 font-semibold">
+                  <h1 className="text-xl py-3 font-semibold text-justify">
                     {blog.blogHeading}
                   </h1>
                   <h1

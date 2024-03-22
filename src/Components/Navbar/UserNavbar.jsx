@@ -138,14 +138,22 @@ const UserNavbar = () => {
       {!toggle && (
         <div className="absolute w-full z-10">
           <ul className="p-3 font-semibold flex flex-col items-end bg-white bg-opacity-95 text-black">
-            <li className="p-3">HOME</li>
-            <li className="p-3">ALL COURSES</li>
-            <li className="p-3">MY LEARNING</li>
-            <li className="p-3">BLOG</li>
+            <li className="p-3" onClick={() => navigate("/")}>
+              HOME
+            </li>
+            <li className="p-3" onClick={() => navigate("/user/courses")}>
+              ALL COURSES
+            </li>
+            <li className="p-3" onClick={() => navigate("/user/myLearning")}>
+              MY LEARNING
+            </li>
+            <li className="p-3" onClick={() => navigate("/user/blog")}>
+              BLOG
+            </li>
             <li className="p-3" onClick={() => navigate("/user/profile")}>
               PROFILE
             </li>
-            {!role === 2000 ? (
+            {!role ? (
               <>
                 <li className="p-3" onClick={() => navigate("/user/login")}>
                   LOGIN
